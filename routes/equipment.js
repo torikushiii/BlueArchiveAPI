@@ -22,6 +22,7 @@ module.exports = (function () {
         }
 
         if (id.toString().toLowerCase().startsWith("t")) {
+            id = id.toString().toLowerCase();
             const tierData = await ba.Localize.getTypes(id);
             if (tierData) {
                 id = tierData;
