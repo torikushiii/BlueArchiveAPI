@@ -21,7 +21,7 @@ module.exports = (function () {
             id = req.params.id;
         }
 
-        if (id.toString().startsWith("t")) {
+        if (id.toString().toLowerCase().startsWith("t")) {
             const tierData = await ba.Localize.getTypes(id);
             if (tierData) {
                 id = tierData;
