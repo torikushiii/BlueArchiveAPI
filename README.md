@@ -26,7 +26,8 @@ If you want to have the API running on a different port, change the port on `app
 ```
 Supports by equipment name:
 
-https://api.torikushi.xyz/equipment/Tennis Headband
+Item name: Tennis Headband
+https://api.torikushi.xyz/equipment/Tennis%20Headband
 
 Support by equipment ID:
 
@@ -34,8 +35,10 @@ https://api.torikushi.xyz/equipment/5000
 
 Support by equipment Tier
 
-https://api.torikushi.xyz/equipment/t1 hairpin
-https://api.torikushi.xyz/equipment/t2 hairpin
+Item: t1 hairpin, t2 hairpin
+
+https://api.torikushi.xyz/equipment/t1%20hairpin
+https://api.torikushi.xyz/equipment/t2%20hairpin
 ```
 
 ### License
