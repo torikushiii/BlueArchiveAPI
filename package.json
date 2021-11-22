@@ -1,0 +1,22 @@
+{
+  "name": "BlueArchiveAPI",
+  "version": "1.0.0",
+  "description": "API that serves data for the game Blue Archive",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "engines": {
+    "node": ">= 16.0"
+  },
+  "homepage": "https://api.torikushi.xyz",
+  "author": "torikushiii",
+  "license": "OSL-3.0",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "chalk": "^4.1.2",
+    "express": "^4.17.1",
+    "express-async-errors": "^3.1.1"
+  }
+}
