@@ -2,7 +2,7 @@
 
 An API that focused on drop rate of each stages on Blue Archive.
 
-**Hostd API at https://api.torikushi.xyz!**
+**Hosted API at https://api.torikushi.xyz!**
 
 ## Prerequisites
 
@@ -19,6 +19,24 @@ yarn/npm install
 ```
 
 If you want to have the API running on a different port, change the port on `app.js` to your preferred port.
+
+### Usage
+
+- [api.torikushi.xyz/equipment/](https://api.torikushi.xyz/equipment)
+```
+Supports by equipment name:
+
+https://api.torikushi.xyz/equipment/Tennis Headband
+
+Support by equipment ID:
+
+https://api.torikushi.xyz/equipment/5000
+
+Support by equipment Tier
+
+https://api.torikushi.xyz/equipment/t1 hairpin
+https://api.torikushi.xyz/equipment/t2 hairpin
+```
 
 ### License
 
