@@ -1,0 +1,143 @@
+const chalk = require("chalk");
+
+module.exports = class BlueArchiveStage extends require("./template") {
+    static data = new Map();
+    constructor (data) {
+        super();
+
+        /**
+         * Unique ID of the stage.
+         * @type {number}
+         */
+        this.ID = data.ID;
+
+        /**
+         * Minimum rank required to clear the stage.
+         * @type {number}
+         */
+        this.minRank = data.minRank;
+
+        /**
+         * Stamina cost to enter the stage.
+         * @type {number}
+         */
+        this.staminaCost = data.staminaCost;
+
+        /**
+         * Duration of the battle.
+         * @type {string}
+         */
+        this.battleDuration = data.battleDuration;
+
+        /**
+         * Maximum number of turns before the battle ends.
+         * @type {number}
+         */
+        this.maxTurns = data.maxTurns;
+
+        /**
+         * Contains the information about the stage.
+         * type: the type of stage (e.g. "Main", "Sub").
+         * difficulty: the difficulty of the stage (e.g. "Normal", "Hard").
+         * chapter: the chapter of the stage (e.g. "1", "2", "3").
+         * subChapter: the subChapter of the stage (e.g. "1", "2", "3").
+         * fullName: the full name of the stage (e.g. "CHAPTER01_Normal_Main_Stage05").
+         * @type {object}
+         */
+        this.stageInfo = data.stageInfo ?? {};
+
+        /**
+         * Contains the objective of the stage.
+         * @type {object}
+         */
+        this.objective = data.objective ?? {};
+
+        /**
+         * Contains the stage data.
+         * @type {object}
+         */
+        this.stageData = data.stageData ?? {};
+
+        /**
+         * The content type of the stage.
+         * @type {string}
+         */
+        this.contentType = data.contentType;
+
+        /**
+         * The campaign reward ID of the stage.
+         * @type {number}
+         */
+        this.campaignRewardId = data.campaignRewardId;
+    }
+
+    static get (identifier) {
+        if (identifier instanceof BlueArchiveStage) {
+            return identifier;
+        }
+        else if (typeof identifier === "number") {
+            const values = [...BlueArchiveStage.data.values()];
+            return values.find(stage => stage.ID === identifier) ?? "No stage exists with this ID";
+        }
+        else {
+            console.error("Invalid identifier type. Must be a number!", {
+                identifier,
+                type: typeof identifier
+            })
+        }
+    }
+
+    static getStageByID (identifier) {
+        if (typeof identifier === "number") {
+            const values = [...BlueArchiveStage.data.values()];
+            const data = values.find(stage => stage.ID === identifier) ?? "No stage exists with this ID";
+            return data.stageInfo;
+        }
+        else {
+            console.error("Invalid identifier type. Must be a number!", {
+                identifier,
+                type: typeof identifier
+            });
+        }
+    }
+
+    static async loadData () {
+        const data = require("../../assets/data/StageData.json"); // TODO: Change to better data structure.
+        for (const stage of data.DataList) {
+            const [fullName, chapter, difficulty, type, subChapter] = stage.Name.match(/^(.+?)_(.+?)_(.+?)_(.+?)$/); // TODO: Find better way to parse stage name.
+            const stageSet = new BlueArchiveStage({
+                ID: stage.Id,
+                minRank: stage.RecommandLevel,
+                staminaCost: stage.StageEnterCostAmount,
+                battleDuration: `${stage.BattleDuration / 1000}s`,
+                maxTurns: stage.MaxTurn,
+                stageInfo: {
+                    type,
+                    difficulty,
+                    chapter,
+                    subChapter,
+                    fullName
+                },
+                objective: {
+                    objectiveOne: "Mission Complete",
+                    objectiveTwo: `Acquire S rank ${stage.StarConditionTacticRankSCount} time(s).`,
+                    objectiveThree: `Clear stage within ${stage.StarConditionTurnCount} turn(s).`
+                },
+                stageData: {
+                    stageTophography: stage.StageTopography,
+                    stageEnvorioment: stage.StrategyEnvironment
+                },
+                contentType: stage.ContentType,
+                campaignRewardId: stage.CampaignStageRewardId
+            });
+
+            BlueArchiveStage.data.set(stage.Id, stageSet);
+        }
+
+        console.log(`${chalk.green("[Loader]")} || ${chalk.red("Loaded")} ${chalk.yellow(BlueArchiveStage.data.size)} ${chalk.red("stage data")}`);
+    }
+
+    static destroy () {
+        BlueArchiveStage.data.clear();
+    }
+}
