@@ -41,6 +41,8 @@ https://api.torikushi.xyz/equipment/t1%20hairpin
 https://api.torikushi.xyz/equipment/t2%20hairpin
 ```
 
+All drop rate were taken and parsed from this [Google Doc](https://docs.google.com/spreadsheets/d/1Pqfk8z-VvtISddqrx_tBw_vv24DgnuBMcgU8frddjKg/)
+
 ### License
 
 Licensed under Open Software License v3.0
