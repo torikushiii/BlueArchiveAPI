@@ -7,7 +7,7 @@
         "stage",
     ];
 
-    const port = 6556;
+    const port = ba.Config.port;
     const bodyParser = require("body-parser");
 
     const Express = require("express");
