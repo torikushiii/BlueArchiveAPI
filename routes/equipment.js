@@ -19,12 +19,17 @@ module.exports = (function () {
         let id;
         if (isNaN(req.params.id)) {
             id = (req.params.id).toLowerCase();
-            const tierData = await ba.Localize.getTypes(id);
-            if (tierData) {
-                id = tierData;
-            }
-            else {
-                id = null;
+
+            const regex = /^t[1-4] (.*)$/;
+            const match = id.match(regex);
+            if (match) {
+                const tierData = await ba.Localize.getTypes(id);
+                if (tierData) {
+                    id = tierData;
+                }
+                else {
+                    id= null;
+                }
             }
         }
         else {
