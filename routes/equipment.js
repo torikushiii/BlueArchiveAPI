@@ -16,13 +16,9 @@ module.exports = (function () {
     Router.get("/:id", async (req, res) => {
         res.set("Content-Type", "application/json");
 
-        let id = Number(req.params.id);
-        if (isNaN(id)) {
-            id = req.params.id;
-        }
-
-        if (id.toString().toLowerCase().startsWith("t")) {
-            id = id.toString().toLowerCase();
+        let id;
+        if (isNaN(req.params.id)) {
+            id = (req.params.id).toLowerCase();
             const tierData = await ba.Localize.getTypes(id);
             if (tierData) {
                 id = tierData;
@@ -31,24 +27,18 @@ module.exports = (function () {
                 id = null;
             }
         }
+        else {
+            id = Number(req.params.id);
+        }
 
         const data = ba.BlueArchiveEquipment.get(id);
         if (data) {
-            try {
-                res.status(200);
-                res.send({
-                    status: 200,
-                    data: data,
-                    drop: ba.BlueArchiveDrop.get(data?.ID) ?? null
-                });
-            }
-            catch (e) {
-                res.status(400);
-                res.send({
-                    status: 400,
-                    error: e.message
-                });
-            }
+            res.status(200);
+            res.send({
+                status: 200,
+                data: data,
+                drop: ba.BlueArchiveDrop.get(data?.ID) ?? null
+            });
         }
         else {
             res.status(404);
