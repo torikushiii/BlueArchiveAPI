@@ -100,6 +100,10 @@ module.exports = class BlueArchiveEquipment extends require("./template") {
             }
             else if (tierTypes[tier] > 1) {
                 const tierData = values.find(value => value.tier === tierTypes[tier] && BlueArchiveEquipment.normalizeName(value.category) === BlueArchiveEquipment.normalizeName(name));
+                if (!tierData) {
+                    return null;
+                }
+                
                 const recipeID = Number("10" + tierData.ID);
                 return values.find(value => value.ID === recipeID);
             }
