@@ -36,6 +36,12 @@ module.exports = (function () {
             id = Number(req.params.id);
         }
 
+        const cache = await ba.Cache.get(id);
+        if (cache) {
+            res.status(200);
+            return res.send(cache);
+        }
+
         const data = ba.BlueArchiveEquipment.get(id);
         if (data) {
             res.status(200);
@@ -43,6 +49,15 @@ module.exports = (function () {
                 status: 200,
                 data: data,
                 drop: ba.BlueArchiveDrop.get(data?.ID) ?? null
+            });
+
+            return await ba.Cache.set({
+                "key": id,
+                "value": JSON.stringify({
+                    data: data,
+                    drop: ba.BlueArchiveDrop.get(data?.ID) ?? null
+                }),
+                "expireAt": 1_800_000
             });
         }
         else {

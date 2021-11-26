@@ -5,6 +5,7 @@ module.exports = (async function () {
 
     const files = [
         "singleton/localize",
+        "singleton/cache",
 
         "classes/equipment",
         "classes/stage",
@@ -24,6 +25,12 @@ module.exports = (async function () {
             switch (moduleName) {
                 case "localize": {
                     ba.Localize = require("./singleton/localize");
+                    break;
+                }
+
+                case "cache": {
+                    const Component = require("./singleton/cache");
+                    ba.Cache = Component.singleton();
                     break;
                 }
             }
