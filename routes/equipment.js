@@ -39,7 +39,11 @@ module.exports = (function () {
         const cache = await ba.Cache.get(id);
         if (cache) {
             res.status(200);
-            return res.send(cache);
+            return res.send({
+                status: 200,
+                data: cache.data,
+                drop: cache.drop,
+            });
         }
 
         const data = ba.BlueArchiveEquipment.get(id);
