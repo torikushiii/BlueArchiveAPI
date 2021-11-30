@@ -122,7 +122,7 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
                     age: other?.CharacterAge?.EN,
                     birthDate: other?.BirthDate?.EN,
                     artist: other?.ArtistName?.EN ?? other?.ArtistName?.JP,
-                    va: other?.VoiceActor
+                    voiceActor: other?.VoiceActor
                 },
                 stat,
                 terrain,
@@ -148,6 +148,11 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
 	 * @returns {string}
 	 */
 	static normalizeName (character) {
-		return character.toLowerCase();
+        // Quick check wether string contains Japanese characters.
+        if (/[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/.test(character)) {
+            return character;
+        }
+
+		return character?.toLowerCase();
 	}
 }
