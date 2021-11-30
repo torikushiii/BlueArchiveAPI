@@ -3,6 +3,7 @@
 
     await require("./modules");
     const subroutes = [
+        "character",
         "equipment",
         "stage",
     ];
