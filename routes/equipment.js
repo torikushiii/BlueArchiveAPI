@@ -23,12 +23,12 @@ module.exports = (function () {
             const regex = /^t[1-4] (.*)$/;
             const match = id.match(regex);
             if (match) {
-                const tierData = await ba.Localize.getTypes(id);
+                const tierData = await ba.Utils.getEquipmentTypes(id);
                 if (tierData) {
                     id = tierData;
                 }
                 else {
-                    id= null;
+                    id = null;
                 }
             }
         }
