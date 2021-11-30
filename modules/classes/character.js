@@ -5,23 +5,65 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
     constructor (data) {
         super();
 
+        /**
+         * Unique ID of the character.
+         * @type {number}
+         */
         this.ID = data.ID;
 
+        /**
+         * Whether the character is released or not.
+         * @type {boolean}
+         */
         this.isReleased = data.isReleased;
 
+        /**
+         * Whether the character is playable or not.
+         * @type {boolean}
+         */
         this.isPlayable = data.isPlayable;
 
+        /**
+         * Contains character data.
+         * @type {Object}
+         */
         this.character = data.character ?? {};
 
+        /**
+         * Contains character info data.
+         * @type {Object}
+         */
         this.info = data.info ?? {};
 
+        /**
+         * Contains character stat data.
+         * @type {Object}
+         */
         this.stat = data.stat ?? {};
 
+        /**
+         * Contains character favourable terrain data.
+         * @type {Object}
+         */
         this.terrain = data.terrain ?? {};
 
+        /**
+         * Contains character equipment type.
+         * @type {array}
+         */
         this.equipmentType = data.equipmentType ?? [];
 
+        /**
+         * Contains character tags.
+         * @type {array}
+         */
         this.tags = data.tags ?? [];
+
+        /**
+         * Contains character extra info.
+         * @type {Object}
+         */
+        this.other = data.other ?? {};
     }
 
     static get (identifier) {
@@ -56,6 +98,7 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
         for (const key of data.DataList) {
             const stat = await ba.Utils.getCharacterStat(key.Id);
             const terrain = await ba.Utils.getCharacterTerrain(key.Id);
+            const other = await ba.Utils.getCharacterInfo(key.Id);
             
             const characterSet = new BlueArchiveCharacter({
                 ID: key.Id,
@@ -65,6 +108,7 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
                     baseStar: key.DefaultStarGrade,
                     rarity: key.Rarity,
                     name: await ba.Utils.getCharacterName(key.LocalizeEtcId),
+                    profile: other?.ProfileIntroduction?.EN ?? "",
                     armorType: key.ArmorType,
                     bulletType: key.BulletType,
                     position: key.TacticRange,
@@ -73,13 +117,18 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
                     weaponType: key.WeaponType,
                 },
                 info: {
-                    club: key.Club,
-                    school: key.School,
+                    club: key?.Club,
+                    school: key?.School,
+                    age: other?.CharacterAge?.EN,
+                    birthDate: other?.BirthDate?.EN,
+                    artist: other?.ArtistName?.EN ?? other?.ArtistName?.JP,
+                    va: other?.VoiceActor
                 },
                 stat,
                 terrain,
                 equipmentType: key.EquipmentSlot,
                 tags: key.Tags,
+                other
             });
 
             BlueArchiveCharacter.data.set(key.Id, characterSet);
@@ -93,12 +142,12 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
     }
 
     /**
-	 * Normalizes non-standard strings into standardized equipment name.
+	 * Normalizes non-standard strings into standardized character name.
 	 * Turns input string into lowercase.
-	 * @param {string} equipment
+	 * @param {string} character
 	 * @returns {string}
 	 */
-	static normalizeName (equipment) {
-		return equipment.toLowerCase();
+	static normalizeName (character) {
+		return character.toLowerCase();
 	}
 }
