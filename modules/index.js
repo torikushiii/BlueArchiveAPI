@@ -4,12 +4,13 @@ module.exports = (async function () {
     globalThis.ba = {};
 
     const files = [
-        "singleton/localize",
+        "singleton/utils",
         "singleton/cache",
 
         "classes/equipment",
         "classes/stage",
-        "classes/drop"
+        "classes/drop",
+        "classes/character",
     ];
 
     ba.Config = require("./config");
@@ -23,8 +24,8 @@ module.exports = (async function () {
         const [type, moduleName] = file.split("/");
         if (type === "singleton") {
             switch (moduleName) {
-                case "localize": {
-                    ba.Localize = require("./singleton/localize");
+                case "utils": {
+                    ba.Utils = require("./singleton/utils");
                     break;
                 }
 
