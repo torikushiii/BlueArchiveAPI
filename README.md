@@ -1,5 +1,7 @@
 # Blue Archive API
 
+## *This API data is mainly based from global version of Blue Archive*
+
 An API that primarily focused on drop rate of each stages on Blue Archive.
 
 Now Support  Characters!
