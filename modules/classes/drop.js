@@ -54,10 +54,10 @@ module.exports = class BlueArchiveDrop extends require("./template") {
     }
 
     static async loadData () {
-        const data = require("../../assets/data/DropData.json");
-        for (let i = 0; i < data.DataList.length; i++) {
-            if (data.DataList[i].RewardTag === "Default") {
-                const getStageName = ba.BlueArchiveStage.getStageByID(data.DataList[i].GroupId);
+        const data = await ba.Query.get("DropDataMain");
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].RewardTag === "Default") {
+                const getStageName = ba.BlueArchiveStage.getStageByID(data[i].GroupId);
                 if (getStageName) {
                     getStageName.chapter = getStageName.chapter.replace(/CHAPTER0/g, "Chapter ");
                     getStageName.subChapter = getStageName.subChapter.replace(/Stage0/g, "Stage ");
@@ -66,12 +66,12 @@ module.exports = class BlueArchiveDrop extends require("./template") {
                 const dropObj = new BlueArchiveDrop({
                     stageName: (getStageName) ? `[${getStageName.difficulty}] ${getStageName.type} ${getStageName.chapter} - ${getStageName.subChapter}` : "???",
                     stageInfo: {
-                        ID: data.DataList[i].GroupId,
-                        stageData: `http${ba.Config.secure ? "s" : ""}://${ba.Config.hostname}/stage/${data.DataList[i].GroupId}`
+                        ID: data[i].GroupId,
+                        stageData: `http${ba.Config.secure ? "s" : ""}://${ba.Config.hostname}/stage/${data[i].GroupId}`
                     },
-                    stageRewardID: data.DataList[i].StageRewardId,
-                    dropAmount: data.DataList[i].StageRewardAmount,
-                    dropChance: data.DataList[i].StageRewardProb / 100
+                    stageRewardID: data[i].StageRewardId,
+                    dropAmount: data[i].StageRewardAmount,
+                    dropChance: data[i].StageRewardProb / 100
                 });
     
                 BlueArchiveDrop.data.set(i, dropObj);

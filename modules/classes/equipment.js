@@ -120,8 +120,8 @@ module.exports = class BlueArchiveEquipment extends require("./template") {
     }
 
     static async loadData () {
-        const data = require("../../assets/data/EquipmentData.json"); // TODO: Change to better data structure.
-        for (const item of data.DataList) {
+        const data = await ba.Query.get("EquipmentData");
+        for (const item of data) {
             const itemSet = new BlueArchiveEquipment({
                 ID: item.Id,
                 name: await ba.Utils.getEquipmentName(item.LocalizeEtcId),

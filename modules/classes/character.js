@@ -94,8 +94,8 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
     }
 
     static async loadData () {
-        const data = require("../../assets/data/CharacterExcelTable.json");
-        for (const key of data.DataList) {
+        const data = await ba.Query.get("CharacterData");
+        for (const key of data) {
             const stat = await ba.Utils.getCharacterStat(key.Id);
             const terrain = await ba.Utils.getCharacterTerrain(key.Id);
             const other = await ba.Utils.getCharacterInfo(key.Id);

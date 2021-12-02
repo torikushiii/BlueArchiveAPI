@@ -1,6 +1,6 @@
-const data = require("../../assets/localize/LocalizeEtcExcelTable.json");
+const data = require("../../assets/localize/LocalizeEtc.json");
 const statData = require("../../assets/localize/CharacterStat.json");
-const characterLocalize = require("../../assets/localize/LocalizeCharProfileExcelTable.json");
+const characterLocalize = require("../../assets/localize/LocalizeCharacterProfile.json");
 
 module.exports.capitalize = (string) => {
     return string[0].toUpperCase() + string.substring(1).toLowerCase();

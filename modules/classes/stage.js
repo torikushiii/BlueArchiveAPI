@@ -102,8 +102,8 @@ module.exports = class BlueArchiveStage extends require("./template") {
     }
 
     static async loadData () {
-        const data = require("../../assets/data/StageData.json"); // TODO: Change to better data structure.
-        for (const stage of data.DataList) {
+        const data = await ba.Query.get("StageDataMain");
+        for (const stage of data) {
             const [fullName, chapter, difficulty, type, subChapter] = stage.Name.match(/^(.+?)_(.+?)_(.+?)_(.+?)$/); // TODO: Find better way to parse stage name.
             const stageSet = new BlueArchiveStage({
                 ID: stage.Id,
