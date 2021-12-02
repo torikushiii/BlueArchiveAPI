@@ -28,6 +28,9 @@ module.exports = class Query extends require("./template") {
         if (!process.env.MONGO_IP || !process.env.MONGO_PORT) {
             return console.error("MongoDB IP or Port is not defined");
         }
+        else if (!process.env.DB_NAME) {
+            return console.error("Database name is not defined");
+        }
 
         this.connect();
     }
@@ -59,8 +62,8 @@ module.exports = class Query extends require("./template") {
 
     /**
      * Insert a new document into a collection
-     * @param {*} collection The collection name
-     * @param {*} data The data to insert
+     * @param {string} collection The collection name
+     * @param {object} data The data to insert
      */
     async set (collection, data) {
         if (!collection) {
@@ -70,6 +73,11 @@ module.exports = class Query extends require("./template") {
         await client.db(process.env.DB_NAME).collection(collection).insertOne(data);
     }
 
+    /**
+     * Insert batch of documents into a collection
+     * @param {string} collection The collection name
+     * @param {Array} data The data to insert
+     */
     async setBatch (collection, data) {
         if (!collection) {
             return [];
@@ -80,7 +88,7 @@ module.exports = class Query extends require("./template") {
 
     /**
      * Get current collection size
-     * @param {*} collection The collection name
+     * @param {string} collection The collection name
      * @returns {Promise<number>}
      */
     async getRowID (collection) {
