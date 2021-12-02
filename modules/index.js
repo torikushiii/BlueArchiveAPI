@@ -1,9 +1,15 @@
 const chalk = require("chalk");
 
-module.exports = (async function () {
+module.exports = (async function (namespace, options = {}) {
+    /**
+     * Global namespace
+     * @namespace
+     * @type {Object}
+     */
     globalThis.ba = {};
 
     const files = [
+        "singleton/query",
         "singleton/utils",
         "singleton/cache",
 
@@ -13,19 +19,29 @@ module.exports = (async function () {
         "classes/character",
     ];
 
+    const {
+        whitelist,
+        skip = []
+    } = options;
+
     ba.Config = require("./config");
 
     console.groupCollapsed("Loading BlueArchive module");
 
     for (const file of files) {
+        if (whitelist && !whitelist.includes(file)) {
+            continue;
+        }
+
         console.log(`${chalk.green("[LOADER]")} || ${chalk.red(`Loading ${file}`)}`);
         const start = process.hrtime.bigint();
         
         const [type, moduleName] = file.split("/");
         if (type === "singleton") {
             switch (moduleName) {
-                case "utils": {
-                    ba.Utils = require("./singleton/utils");
+                case "query": {
+                    const Component = require("./singleton/query");
+                    ba.Query = Component.singleton();
                     break;
                 }
 
@@ -34,11 +50,21 @@ module.exports = (async function () {
                     ba.Cache = Component.singleton();
                     break;
                 }
+
+                case "utils": {
+                    ba.Utils = require("./singleton/utils");
+                    break;
+                }
             }
         }
         else if (type === "classes") {
             const component = require(`./${file}`);
-            ba[component.name] = await component.initialize();
+            if (skip.includes(file)) {
+                ba[component.name] = component;
+            }
+            else {
+                ba[component.name] = await component.initialize();
+            }
         }
 
         const end = process.hrtime.bigint();
@@ -46,4 +72,4 @@ module.exports = (async function () {
     }
 
     console.groupEnd();
-})();
+});
