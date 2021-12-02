@@ -53,7 +53,15 @@ module.exports.getCharacterInfo = async (ID) => {
                     "DE": characterLocalize.DataList[keyData].ArtistNameDe,
                     "FR": characterLocalize.DataList[keyData].ArtistNameFr,
                 },
-                "VoiceActor": characterLocalize.DataList[keyData].CharacterVoiceEn,
+                "VoiceActor": {
+                    "KR": characterLocalize.DataList[keyData].CharacterVoiceKr,
+                    "JP": characterLocalize.DataList[keyData].CharacterVoiceJp,
+                    "TH": characterLocalize.DataList[keyData].CharacterVoiceTh,
+                    "TW": characterLocalize.DataList[keyData].CharacterVoiceTw,
+                    "EN": characterLocalize.DataList[keyData].CharacterVoiceEn,
+                    "DE": characterLocalize.DataList[keyData].CharacterVoiceDe,
+                    "FR": characterLocalize.DataList[keyData].CharacterVoiceFr,
+                },
                 "StatusMessage": {
                     "KR": characterLocalize.DataList[keyData].StatusMessageKr,
                     "JP": characterLocalize.DataList[keyData].StatusMessageJp,
@@ -125,6 +133,15 @@ module.exports.getCharacterInfo = async (ID) => {
                     "EN": characterLocalize.DataList[keyData].ProfileIntroductionEn,
                     "DE": characterLocalize.DataList[keyData].ProfileIntroductionDe,
                     "FR": characterLocalize.DataList[keyData].ProfileIntroductionFr,
+                },
+                "CharacterSSRNewLine": {
+                    "KR": characterLocalize.DataList[keyData].CharacterSSRNewKr,
+                    "JP": characterLocalize.DataList[keyData].CharacterSSRNewJp,
+                    "TH": characterLocalize.DataList[keyData].CharacterSSRNewTh,
+                    "TW": characterLocalize.DataList[keyData].CharacterSSRNewTw,
+                    "EN": characterLocalize.DataList[keyData].CharacterSSRNewEn,
+                    "DE": characterLocalize.DataList[keyData].CharacterSSRNewDe,
+                    "FR": characterLocalize.DataList[keyData].CharacterSSRNewFr,
                 }
             }
         }

@@ -109,7 +109,7 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
                     rarity: key.Rarity,
                     name: await ba.Utils.getCharacterName(key.LocalizeEtcId),
                     profile: other?.ProfileIntroduction?.EN ?? "",
-                    armorType: key.ArmorType,
+                    armorType: (key.ArmorType === "Unarmed" ? "Special Armor" : key.ArmorType),
                     bulletType: key.BulletType,
                     position: key.TacticRange,
                     role: key.TacticRole,
@@ -122,7 +122,7 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
                     age: other?.CharacterAge?.EN,
                     birthDate: other?.BirthDate?.EN,
                     artist: other?.ArtistName?.EN ?? other?.ArtistName?.JP,
-                    voiceActor: other?.VoiceActor
+                    voiceActor: other?.VoiceActor?.EN ?? other?.VoiceActor?.JP,
                 },
                 stat,
                 terrain,
