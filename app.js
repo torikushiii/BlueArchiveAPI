@@ -1,7 +1,8 @@
 (async function () {
     "use strict";
 
-    await require("./modules");
+    require("./db-access");
+    await require("./modules")();
     const subroutes = [
         "character",
         "equipment",
@@ -48,6 +49,30 @@
         }
 
         console.error("API Error", { err, req, res });
+
+        try {
+            const requestID = await ba.Query.getRowID("error");
+            ba.Query.set("error", {
+                request: requestID,
+                message: err.message ?? null,
+                stack: err.stack ?? null
+            });
+
+            res.set("Content-Type", "application/json");
+            return res.status(500).send({
+                status: 500,
+                message: `Internal Server Error (ID ${requestID})`
+            });
+        }
+        catch (e) {
+            console.error("Error while trying to log error", e);
+
+            res.set("Content-Type", "application/json");
+            return res.status(500).send({
+                status: 500,
+                message: "Internal Server Error"
+            });
+        }
     });
 
     app.get("*", (req, res) => {
