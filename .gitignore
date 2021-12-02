@@ -78,3 +78,4 @@ typings/
 assets/
 modules/config.js
 types.js
+db-access.js
