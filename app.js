@@ -2,7 +2,7 @@
     "use strict";
 
     require("./db-access");
-    await require("./modules")();
+    await require("./modules")("ba");
     const subroutes = [
         "character",
         "equipment",
