@@ -13,30 +13,54 @@ module.exports = (function () {
         });
     });
 
-    Router.get("/:id", (req, res) => {
+    Router.get("/:id", async (req, res) => {
         res.set("Content-Type", "application/json");
-        try {
-            const data = ba.BlueArchiveStage.get(Number(req.params.id));
-            if (!data) {
-                res.status(404);
-                res.send({
-                    status: 404,
-                    data: `Incorrect type of ID was given. Expected number instead of ${typeof req.params.id}`
-                });
-            }
-            else {
-                res.status(200);
-                res.send({
-                    status: 200,
-                    data
-                });
-            }
+
+        const cache = await ba.Cache.get(req.params.id);
+        if (cache) {
+            res.status(200);
+            return res.send({
+                status: 200,
+                data: cache.data,
+                drops: cache.drops
+            });
         }
-        catch (e) {
-            res.status(400);
+
+        const data = ba.BlueArchiveStage.get(Number(req.params.id));
+        if (!data) {
+            res.status(404);
             res.send({
-                status: 400,
-                error: e.message
+                status: 404,
+                data: `Incorrect type of ID was given. Expected number instead of ${typeof req.params.id}`
+            });
+        }
+        else {
+            const drops = [];
+            const dropData = ba.BlueArchiveDrop.getDropByStageID(data.ID);
+            if (dropData) {
+                for (const key in dropData) {
+                    if (dropData.hasOwnProperty(key)) {
+                        if (ba.BlueArchiveEquipment.get(dropData[key].stageRewardID)?.name) {
+                            drops.push(`${ba.BlueArchiveEquipment.get(dropData[key].stageRewardID).name} (%${dropData[key].dropChance})`);
+                        }
+                    }
+                }
+            }
+
+            res.status(200);
+            res.send({
+                status: 200,
+                data,
+                drops
+            });
+
+            return await ba.Cache.set({
+                "key": data.ID,
+                "value": JSON.stringify({
+                    "data": data,
+                    "drops": drops
+                }),
+                "expireAt": 1_800_000
             });
         }
     });
