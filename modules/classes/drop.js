@@ -53,14 +53,31 @@ module.exports = class BlueArchiveDrop extends require("./template") {
         }
     }
 
+    static getDropByStageID (identifier) {
+        if (identifier instanceof BlueArchiveDrop) {
+            return identifier;
+        }
+        else if (typeof identifier === "number") {
+            const values = [...BlueArchiveDrop.data.values()];
+            const filtered = values.filter(value => value.stageInfo.ID === identifier);
+            return filtered;
+        }
+        else {
+            return console.error("Invalid identifier type. Must be a number!", {
+                identifier,
+                type: typeof identifier
+            })
+        }
+    }
+
     static async loadData () {
         const data = await ba.Query.get("DropDataMain");
         for (let i = 0; i < data.length; i++) {
             if (data[i].RewardTag === "Default") {
                 const getStageName = ba.BlueArchiveStage.getStageByID(data[i].GroupId);
                 if (getStageName) {
-                    getStageName.chapter = getStageName.chapter.replace(/CHAPTER0/g, "Chapter ");
-                    getStageName.subChapter = getStageName.subChapter.replace(/Stage0/g, "Stage ");
+                    getStageName.chapter = getStageName.chapter.replace(/CHAPTER/g, "Chapter ");
+                    getStageName.subChapter = getStageName.subChapter.replace(/Stage/g, "Stage ");
                 }
 
                 const dropObj = new BlueArchiveDrop({
