@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "update": "node -e \"require('./assets/update')\""
+    "update": "node -e \"require('./assets/update')\"",
+    "debug": "node --inspect=0.0.0.0:9229 --unhandled-rejections=warn ./app.js"
   },
   "engines": {
     "node": ">= 16.0"
