@@ -88,7 +88,10 @@ module.exports = class BlueArchiveStage extends require("./template") {
     }
 
     static getStageByID (identifier) {
-        if (typeof identifier === "number") {
+        if (identifier instanceof BlueArchiveStage) {
+            return identifier;
+        }
+        else if (typeof identifier === "number") {
             const values = [...BlueArchiveStage.data.values()];
             const data = values.find(stage => stage.ID === identifier) ?? "No stage exists with this ID";
             return data.stageInfo;
