@@ -54,6 +54,12 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
         this.equipmentType = data.equipmentType ?? [];
 
         /**
+         * Contains character skill data.
+         * @type {Object}
+         */
+        this.skill = data.skill ?? {};
+
+        /**
          * Contains character tags.
          * @type {array}
          */
@@ -99,6 +105,7 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
             const stat = await ba.Utils.getCharacterStat(key.Id);
             const terrain = await ba.Utils.getCharacterTerrain(key.Id);
             const other = await ba.Utils.getCharacterInfo(key.Id);
+            const getSkill = ba.BlueArchiveSkill.get(key.Id);
             
             const characterSet = new BlueArchiveCharacter({
                 ID: key.Id,
@@ -127,6 +134,12 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
                 stat,
                 terrain,
                 equipmentType: key.EquipmentSlot,
+                skill: {
+                    "EX": getSkill?.ex,
+                    "normal": getSkill?.public,
+                    "passive": getSkill?.passive,
+                    "sub": getSkill?.extraPassive
+                },
                 tags: key.Tags,
                 other
             });

@@ -83,6 +83,7 @@ module.exports = class Query extends require("./template") {
             return [];
         }
 
+        await client.db(process.env.DB_NAME).collection(collection).deleteMany({});
         await client.db(process.env.DB_NAME).collection(collection).insertMany(data);
     }
 

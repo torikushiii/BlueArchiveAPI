@@ -16,6 +16,7 @@ module.exports = (async function (namespace, options = {}) {
         "classes/equipment",
         "classes/stage",
         "classes/drop",
+        "classes/skill",
         "classes/character",
     ];
 
@@ -33,7 +34,7 @@ module.exports = (async function (namespace, options = {}) {
             continue;
         }
 
-        console.log(`${chalk.green("[LOADER]")} || ${chalk.red(`Loading ${file}`)}`);
+        console.log(`${chalk.green("[LOADER]")} || ${chalk.yellow(`Loading ${file}`)}`);
         const start = process.hrtime.bigint();
         
         const [type, moduleName] = file.split("/");
@@ -68,7 +69,7 @@ module.exports = (async function (namespace, options = {}) {
         }
 
         const end = process.hrtime.bigint();
-        console.log(`${chalk.green("[LOADER]")} || ${chalk.blue(`${moduleName} loaded in ${Number(end - start) / 1e6}ms`)}`);
+        console.log(`${chalk.green("[LOADER]")} || ${chalk.greenBright(`${moduleName} loaded in ${Number(end - start) / 1e6}ms`)}`);
     }
 
     console.groupEnd();

@@ -1,6 +1,6 @@
 {
   "name": "BlueArchiveAPI",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "API that serves data for the game Blue Archive",
   "main": "app.js",
   "scripts": {

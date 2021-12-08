@@ -1,12 +1,44 @@
 const data = require("../../assets/localize/LocalizeEtc.json");
 const statData = require("../../assets/localize/CharacterStat.json");
 const characterLocalize = require("../../assets/localize/LocalizeCharacterProfile.json");
+const skillLocalize = require("../../assets/localize/LocalizeSkillExcelTable.json");
+const skillList = require("../../assets/data/SkillExcelTable.json").DataList;
 
-module.exports.capitalize = (string) => {
+exports.getSkillInfo = async (ID) => {
+    const cleanRegex = /\[([^\]]+)\]/g;
+    for (const keyData in skillLocalize.DataList) {
+        if (skillLocalize.DataList[keyData].Key === ID) {
+            return {
+                "name": skillLocalize.DataList[keyData]?.NameEn,
+                "description": (skillLocalize.DataList[keyData]?.DescriptionEn) ? skillLocalize.DataList[keyData].DescriptionEn.replace(cleanRegex, "") : null,
+            }
+        }
+    }
+}
+
+exports.getSkillData = async (name) => {
+    const stuff = [];
+    const skill = skillList.filter(skill => skill.GroupId === name);
+    if (skill.length) {
+        for (const key of skill) {
+            stuff.push({
+                "level": key.Level,
+                "name": (await this.getSkillInfo(key.LocalizeSkillId)).name,
+                "description": (await this.getSkillInfo(key.LocalizeSkillId)).description,
+                "skillCost": key.SkillCost,
+                "bulletType": key.BulletType
+            });
+        }
+    }
+
+    return stuff;
+}
+
+exports.capitalize = (string) => {
     return string[0].toUpperCase() + string.substring(1).toLowerCase();
 }
 
-module.exports.getEquipmentName = async (ID) => {
+exports.getEquipmentName = async (ID) => {
     for (const keyData in data.DataList) {
         if (data.DataList[keyData].Key === ID) {
             return data.DataList[keyData].NameEn;
@@ -14,7 +46,7 @@ module.exports.getEquipmentName = async (ID) => {
     }
 }
 
-module.exports.getEquipmentDescription = async (ID) => {
+exports.getEquipmentDescription = async (ID) => {
     for (const keyData in data.DataList) {
         if (data.DataList[keyData].Key === ID) {
             return data.DataList[keyData].DescriptionEn;
@@ -22,7 +54,7 @@ module.exports.getEquipmentDescription = async (ID) => {
     }
 }
 
-module.exports.getEquipmentTypes = async (item) => {
+exports.getEquipmentTypes = async (item) => {
     const data = ba.BlueArchiveEquipment.getDataByTier(item);
     if (data) {
         return data.ID;
@@ -32,7 +64,7 @@ module.exports.getEquipmentTypes = async (item) => {
     }
 }
 
-module.exports.getCharacterName = async (ID) => {
+exports.getCharacterName = async (ID) => {
     for (const keyData in data.DataList) {
         if (data.DataList[keyData].Key === ID) {
             return (data.DataList[keyData].NameEn) ? data.DataList[keyData].NameEn : "???";
@@ -40,7 +72,7 @@ module.exports.getCharacterName = async (ID) => {
     }
 }
 
-module.exports.getCharacterInfo = async (ID) => {
+exports.getCharacterInfo = async (ID) => {
     for (const keyData in characterLocalize.DataList) {
         if (characterLocalize.DataList[keyData].CharacterId === ID) {
             return {
@@ -148,7 +180,7 @@ module.exports.getCharacterInfo = async (ID) => {
     }
 }
 
-module.exports.getCharacterStat = async (ID) => {
+exports.getCharacterStat = async (ID) => {
     for (const keyData in statData.DataList) {
         if (statData.DataList[keyData].CharacterId === ID) {
             return {
@@ -171,7 +203,7 @@ module.exports.getCharacterStat = async (ID) => {
     }
 }
 
-module.exports.getCharacterTerrain = async (ID) => {
+exports.getCharacterTerrain = async (ID) => {
     for (const keyData in statData.DataList) {
         if (statData.DataList[keyData].CharacterId === ID) {
             return {
