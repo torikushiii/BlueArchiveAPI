@@ -4,7 +4,7 @@
 
 An API that primarily focused on drop rate of each stages on Blue Archive.
 
-Now Support  Characters!
+Now Support Characters Data!
 
 **Hosted API at https://api.torikushi.xyz!**
 
@@ -43,7 +43,7 @@ Supports by equipment name:
   https://api.torikushi.xyz/equipment/t2%20watch
 ```
 
-- [https://api.torikushi.xyz/character/](https://api.torikushi.xyz/character/)
+- [https://api.torikushi.xyz/character/](https://api.torikushi.xyz/character)
 ```
 Get Character by Name or ID:
 
@@ -53,6 +53,23 @@ Get Character by Name or ID:
 - Character ID: 10015 (Alice)
   https://api.torikushi.xyz/character/10015
 ```
+
+### This endpoint is still under development
+- [https://api.torikushi.xyz/character/getArmor?type=(Armor Type)](https://api.torikushi.xyz/character/getArmor?type=(ArmorType))
+- [https://api.torikushi.xyz/character/getBullet?type=(Ammo Type)](https://api.torikushi.xyz/character/getBullet?type=(ArmorType))
+```
+Get Character by Armor Type or Ammo Type
+- Armor Type: 
+  - Heavy Armor: https://api.torikushi.xyz/character/getArmor?type=heavy%20armor
+  - Light Armor: https://api.torikushi.xyz/character/getArmor?type=light%20armor
+  - Special Armor: https://api.torikushi.xyz/character/getArmor?type=special%20armor
+
+- Bullet Type:
+  - Explosion: https://api.torikushi.xyz/character/getBullet?type=explosion
+  - Mystic: https://api.torikushi.xyz/character/getBullet?type=mystic
+  - Penetration: https://api.torikushi.xyz/character/getBullet?type=penetration
+```
+
 All drop rate were taken and parsed from this [Google Doc](https://docs.google.com/spreadsheets/d/1Pqfk8z-VvtISddqrx_tBw_vv24DgnuBMcgU8frddjKg/)
 
 ### License
