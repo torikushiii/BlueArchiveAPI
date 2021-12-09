@@ -97,6 +97,67 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
                 return data;
             }
         }
+        else {
+            console.error("Invalid character identifier", {
+                identifier,
+                "type": typeof identifier
+            });
+        }
+    }
+
+    static getCharacterByAmmo (identifier) {
+        if (identifier instanceof BlueArchiveCharacter) {
+            return identifier;
+        }
+        else if (typeof identifier === "string") {
+            const values = [...BlueArchiveCharacter.data.values()];
+            const data = values.filter(value => 
+                value.character.bulletType === ba.Utils.capitalize(identifier)
+                && value.isPlayable
+                && value.character.name !== "???"
+                && value.character.name !== "LocalizeError"
+            );
+
+            if (!data.length) {
+                return null;
+            }
+
+            return data.map(value => value.character.name).sort();
+        }
+        else {
+            console.error("Invalid character identifier", {
+                identifier,
+                "type": typeof identifier
+            });
+        }
+    }
+
+    static getCharacterByArmor (identifier) {
+        if (identifier instanceof BlueArchiveCharacter) {
+            return identifier;
+        }
+        else if (typeof identifier === "string") {
+            const values = [...BlueArchiveCharacter.data.values()];
+            const data = values.filter(value => 
+                BlueArchiveCharacter.normalizeName(value.character.armorType) === BlueArchiveCharacter.normalizeName(identifier)
+                && value.isPlayable
+                && value.character.name !== "???"
+                && value.character.name !== "LocalizeError"
+            );
+
+            if (!data.length) {
+                return null;
+            }
+
+            // return character name with sorted by alphabet
+            return data.map(value => value.character.name).sort();
+        }
+        else {
+            console.error("Invalid character identifier", {
+                identifier,
+                "type": typeof identifier
+            });
+        }
     }
 
     static async loadData () {
@@ -106,7 +167,7 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
             const terrain = await ba.Utils.getCharacterTerrain(key.Id);
             const other = await ba.Utils.getCharacterInfo(key.Id);
             const getSkill = ba.BlueArchiveSkill.get(key.Id);
-            
+
             const characterSet = new BlueArchiveCharacter({
                 ID: key.Id,
                 isReleased: (key.ProductionStep === "Release") ? true : false,
@@ -116,8 +177,8 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
                     rarity: key.Rarity,
                     name: await ba.Utils.getCharacterName(key.LocalizeEtcId),
                     profile: other?.ProfileIntroduction?.EN ?? "",
-                    armorType: (key.ArmorType === "Unarmed" ? "Special Armor" : key.ArmorType),
-                    bulletType: key.BulletType,
+                    armorType: this.fixArmorType(key.ArmorType),
+                    bulletType: (key.BulletType === "Pierce") ? "Penetration" : key.BulletType,
                     position: key.TacticRange,
                     role: key.TacticRole,
                     squadType: (key.SquadType === "Main") ? "Striker" : "Special",
@@ -152,6 +213,16 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
 
     static destroy () {
         BlueArchiveCharacter.data.clear();
+    }
+
+    static fixArmorType (armorType) {
+        const types = {
+            "Unarmed": "Special Armor",
+            "HeavyArmor": "Heavy Armor",
+            "LightArmor": "Light Armor"
+        }
+
+        return types[armorType] ?? "???";
     }
 
     /**

@@ -13,6 +13,40 @@ module.exports = (function () {
         });
     });
 
+    Router.get("/getArmor", (req, res) => {
+        res.set("Content-Type", "application/json");
+        if (req.query.type) {
+            res.send({
+                status: 200,
+                data: ba.BlueArchiveCharacter.getCharacterByArmor(req.query.type)
+            });
+        }
+        else {
+            res.status(200);
+            res.send({
+                status: 200,
+                data: "No armor type is given!"
+            });
+        }
+    });
+
+    Router.get("/getBullet", (req, res) => {
+        res.set("Content-Type", "application/json");
+        if (req.query.type) {
+            res.send({
+                status: 200,
+                data: ba.BlueArchiveCharacter.getCharacterByAmmo(req.query.type)
+            });
+        }
+        else {
+            res.status(200);
+            res.send({
+                status: 200,
+                data: "No bullet type is given!"
+            });
+        }
+    });
+
     Router.get("/:id", async (req, res) => {
         res.set("Content-Type", "application/json");
 
