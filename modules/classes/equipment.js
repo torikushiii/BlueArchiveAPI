@@ -90,7 +90,8 @@ module.exports = class BlueArchiveEquipment extends require("./template") {
                 "t1": 1,
                 "t2": 2,
                 "t3": 3,
-                "t4": 4
+                "t4": 4,
+                "t5": 5
             }
 
             const [tier, name] = identifier.split(" ");

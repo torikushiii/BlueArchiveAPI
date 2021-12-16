@@ -20,7 +20,7 @@ module.exports = (function () {
         if (isNaN(req.params.id)) {
             id = (req.params.id).toLowerCase();
 
-            const regex = /^t[1-4] (.*)$/;
+            const regex = /^t[1-5] (.*)$/;
             const match = id.match(regex);
             if (match) {
                 const tierData = await ba.Utils.getEquipmentTypes(id);
