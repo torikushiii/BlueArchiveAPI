@@ -125,8 +125,8 @@ module.exports = class BlueArchiveEquipment extends require("./template") {
         for (const item of data) {
             const itemSet = new BlueArchiveEquipment({
                 ID: item.Id,
-                name: await ba.Utils.getEquipmentName(item.LocalizeEtcId),
-                description: await ba.Utils.getEquipmentDescription(item.LocalizeEtcId),
+                name: ba.Utils.wrapString(await ba.Utils.getEquipmentName(item.LocalizeEtcId)),
+                description: ba.Utils.wrapString(await ba.Utils.getEquipmentDescription(item.LocalizeEtcId)),
                 category: item.EquipmentCategory,
                 rarity: item.Rarity,
                 maxLevel: item.MaxLevel,

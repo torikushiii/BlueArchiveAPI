@@ -81,7 +81,7 @@ module.exports = class BlueArchiveDrop extends require("./template") {
                 }
 
                 const dropObj = new BlueArchiveDrop({
-                    stageName: (getStageName) ? `[${getStageName.difficulty}] ${getStageName.type} ${getStageName.chapter} - ${getStageName.subChapter}` : "???",
+                    stageName: (getStageName) ? `${ba.Utils.wrapString(`[${getStageName.difficulty}] ${getStageName.type} ${getStageName.chapter} - ${getStageName.subChapter}`)}` : "???",
                     stageInfo: {
                         ID: data[i].GroupId,
                         stageData: `http${ba.Config.secure ? "s" : ""}://${ba.Config.hostname}/stage/${data[i].GroupId}`
