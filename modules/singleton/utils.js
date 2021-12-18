@@ -72,6 +72,18 @@ exports.getCharacterName = async (ID) => {
     }
 }
 
+exports.wrapString = (string, length, options = {}) => {
+    if (typeof string !== "string") {
+        return "Provided input must be a string";
+    }
+
+    if (!options.keepWhitespace) {
+        string = string.replace(/\r?\n/g, " ").replace(/\s+/g, " ");
+    }
+
+    return (string.length >= length) ? `${string.slice(0, length - 1)}...` : string;
+}
+
 exports.getCharacterInfo = async (ID) => {
     for (const keyData in characterLocalize.DataList) {
         if (characterLocalize.DataList[keyData].CharacterId === ID) {
