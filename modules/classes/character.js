@@ -163,8 +163,6 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
     static async loadData () {
         const data = await ba.Query.get("CharacterData");
         for (const key of data) {
-            const stat = await ba.Utils.getCharacterStat(key.Id);
-            const terrain = await ba.Utils.getCharacterTerrain(key.Id);
             const other = await ba.Utils.getCharacterInfo(key.Id);
             const getSkill = ba.BlueArchiveSkill.get(key.Id);
 
@@ -192,8 +190,8 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
                     artist: other?.ArtistName?.EN ?? other?.ArtistName?.JP,
                     voiceActor: other?.VoiceActor?.EN ?? other?.VoiceActor?.JP,
                 },
-                stat,
-                terrain,
+                stat: await ba.Utils.getCharacterStat(key.Id),
+                terrain: await ba.Utils.getCharacterTerrain(key.Id),
                 equipmentType: key.EquipmentSlot,
                 skill: {
                     "EX": getSkill?.ex,
