@@ -54,7 +54,7 @@ module.exports = class Query extends require("./template") {
      */
     async get (collection, query = {}) {
         if (!collection) {
-            return [];
+            return "No collection is defined";
         }
 
         return await client.db(process.env.DB_NAME).collection(collection).find(query).toArray();
@@ -67,7 +67,7 @@ module.exports = class Query extends require("./template") {
      */
     async set (collection, data) {
         if (!collection) {
-            return [];
+            return "No collection is defined";
         }
 
         await client.db(process.env.DB_NAME).collection(collection).insertOne(data);
@@ -80,7 +80,21 @@ module.exports = class Query extends require("./template") {
      */
     async setBatch (collection, data) {
         if (!collection) {
-            return [];
+            return "No collection is defined";
+        }
+
+        await client.db(process.env.DB_NAME).collection(collection).insertMany(data);
+    }
+    
+    /**
+     * Update a batch of document in a collection.
+     * Delete all documents and insert new ones.
+     * @param {string} collection 
+     * @param {object} data 
+     */
+    async updateBatch (collection, data) {
+        if (!collection) {
+            return "No collection is defined";
         }
 
         await client.db(process.env.DB_NAME).collection(collection).deleteMany({});
