@@ -104,6 +104,21 @@ module.exports = class BlueArchiveStage extends require("./template") {
         }
     }
 
+    static async getRaids () {
+        const stages = [];
+        const raidData = await ba.Query.get("RaidData");
+        for (const raid of raidData) {
+            stages.push({
+                seasonId: raid.SeasonId,
+                bossName: (raid.OpenRaidBossGroup)[0],
+                startAt: raid.SeasonStartData,
+                endAt: raid.SeasonEndData
+            });
+        }
+
+        return stages;
+    }
+
     static async loadData () {
         const data = await ba.Query.get("StageDataMain");
         for (const stage of data) {

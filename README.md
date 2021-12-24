@@ -28,7 +28,7 @@ If you want to have the API running on a different port, change the port on `app
 
 - [api.torikushi.xyz/equipment/](https://api.torikushi.xyz/equipment)
 ```
-Supports by equipment name:
+Get equipment by name id or tier
 
 - Item name: Tennis Headband
   https://api.torikushi.xyz/equipment/Tennis%20Headband
@@ -36,6 +36,7 @@ Supports by equipment name:
 - Support by equipment ID:
   https://api.torikushi.xyz/equipment/5000
 
+(Equipment tier is sorted by blueprint)
 - Support by equipment Tier
   https://api.torikushi.xyz/equipment/t1%20hairpin
   https://api.torikushi.xyz/equipment/t2%20hairpin
@@ -57,6 +58,7 @@ Get Character by Name or ID:
 ### This endpoint is still under development
 - [https://api.torikushi.xyz/character/getArmor?type=(Armor Type)](https://api.torikushi.xyz/character/getArmor?type=(ArmorType))
 - [https://api.torikushi.xyz/character/getBullet?type=(Ammo Type)](https://api.torikushi.xyz/character/getBullet?type=(ArmorType))
+- [https://api.torikushi.xyz/?list=raid](https://api.torikushi.xyz/?list=raid) (Display all current raid and future raids)
 ```
 Get Character by Armor Type or Ammo Type
 - Armor Type: 

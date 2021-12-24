@@ -27,6 +27,17 @@
 
     app.get("/", async (req, res) => {
         res.set("Content-Type", "application/json");
+        if (Object.keys(req.query).length) {
+            const { list } = req.query;
+            if (list === "raid") {
+                res.status(200);
+                return res.send({
+                    status: 200,
+                    data: await ba.BlueArchiveStage.getRaids()
+                });
+            }
+        }
+
         res.status(200);
         res.send({
             status: 200,
