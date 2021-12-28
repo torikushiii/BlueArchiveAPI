@@ -152,7 +152,7 @@ module.exports = class BlueArchiveStage extends require("./template") {
             BlueArchiveStage.data.set(stage.Id, stageSet);
         }
 
-        console.log(`${chalk.green("[Loader]")} || ${chalk.red("Loaded")} ${chalk.yellow(BlueArchiveStage.data.size)} ${chalk.red("stage data")}`);
+        console.log(`${chalk.green("[LOADER]")} || ${chalk.red("Loaded")} ${chalk.yellow(BlueArchiveStage.data.size)} ${chalk.red("stage data")}`);
     }
 
     static destroy () {

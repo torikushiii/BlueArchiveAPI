@@ -95,7 +95,7 @@ module.exports = class BlueArchiveDrop extends require("./template") {
             }
         }
 
-        console.log(`${chalk.green("[Loader]")} || ${chalk.red("Loaded")} ${chalk.yellow(BlueArchiveDrop.data.size)} ${chalk.red("drop data")}`);
+        console.log(`${chalk.green("[LOADER]")} || ${chalk.red("Loaded")} ${chalk.yellow(BlueArchiveDrop.data.size)} ${chalk.red("drop data")}`);
     }
 
     static destroy () {

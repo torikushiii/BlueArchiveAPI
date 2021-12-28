@@ -74,7 +74,7 @@ module.exports = class BlueArchiveSkill extends require("./template") {
             BlueArchiveSkill.data.set(i, skillData);
         }
 
-        console.log(`${chalk.green("[Loader]")} || ${chalk.red("Loaded")} ${chalk.yellow(BlueArchiveSkill.data.size)} ${chalk.red("skill data")}`);
+        console.log(`${chalk.green("[LOADER]")} || ${chalk.red("Loaded")} ${chalk.yellow(BlueArchiveSkill.data.size)} ${chalk.red("skill data")}`);
     }
 
     static destroy () {

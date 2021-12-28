@@ -137,10 +137,10 @@ module.exports = class BlueArchiveEquipment extends require("./template") {
 
             BlueArchiveEquipment.data.set(item.Id, itemSet);
 
-            // console.log(`${chalk.green("[Loader]")} || ${chalk.red("Loaded equipment:")} ${chalk.yellow(item.Id)} || ${chalk.red("Type:")} ${chalk.blue(item.EquipmentCategory)} || ${chalk.red("Tier:")} ${chalk.magenta(item.TierInit)}`);
+            // console.log(`${chalk.green("[LOADER]")} || ${chalk.red("Loaded equipment:")} ${chalk.yellow(item.Id)} || ${chalk.red("Type:")} ${chalk.blue(item.EquipmentCategory)} || ${chalk.red("Tier:")} ${chalk.magenta(item.TierInit)}`);
         }
 
-        console.log(`${chalk.green("[Loader]")} || ${chalk.red("Loaded")} ${chalk.yellow(BlueArchiveEquipment.data.size)} ${chalk.red("equipment items")}`);
+        console.log(`${chalk.green("[LOADER]")} || ${chalk.red("Loaded")} ${chalk.yellow(BlueArchiveEquipment.data.size)} ${chalk.red("equipment items")}`);
     }
 
     static destroy () {
