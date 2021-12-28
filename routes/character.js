@@ -13,38 +13,21 @@ module.exports = (function () {
         });
     });
 
-    Router.get("/getArmor", (req, res) => {
+    Router.get("/query", async (req, res) => {
         res.set("Content-Type", "application/json");
-        if (req.query.type) {
-            res.send({
-                status: 200,
-                data: ba.BlueArchiveCharacter.getCharacterByArmor(req.query.type)
+        if (Object.keys(req.query).length === 0) {
+            res.status(400);
+            return res.send({
+                status: 400,
+                message: "No query parameters is given!"
             });
         }
-        else {
-            res.status(200);
-            res.send({
-                status: 200,
-                data: "No armor type is given!"
-            });
-        }
-    });
-
-    Router.get("/getBullet", (req, res) => {
-        res.set("Content-Type", "application/json");
-        if (req.query.type) {
-            res.send({
-                status: 200,
-                data: ba.BlueArchiveCharacter.getCharacterByAmmo(req.query.type)
-            });
-        }
-        else {
-            res.status(200);
-            res.send({
-                status: 200,
-                data: "No bullet type is given!"
-            });
-        }
+        
+        const data = await ba.BlueArchiveCharacter.getCharacterByQuery(req.query);
+        res.status(200).send({
+            status: 200,
+            data: data
+        })
     });
 
     Router.get("/:id", async (req, res) => {

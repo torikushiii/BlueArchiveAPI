@@ -105,14 +105,21 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
         }
     }
 
-    static getCharacterByAmmo (identifier) {
+    static getCharacterByQuery (identifier) {
         if (identifier instanceof BlueArchiveCharacter) {
             return identifier;
         }
-        else if (typeof identifier === "string") {
+        else if (typeof identifier === "object") {
+            const { type, armor, ammo, school, role, position, weapon } = identifier;
             const values = [...BlueArchiveCharacter.data.values()];
             const data = values.filter(value => 
-                value.character.bulletType === ba.Utils.capitalize(identifier)
+                ((type) ? ba.BlueArchiveCharacter.normalizeName(value.character.squadType) === ba.BlueArchiveCharacter.normalizeName(type) : true)
+                && ((armor) ? ba.BlueArchiveCharacter.normalizeName(value.character.armorType) === ba.BlueArchiveCharacter.normalizeName(armor) : true)
+                && ((ammo) ? ba.BlueArchiveCharacter.normalizeName(value.character.bulletType) === ba.BlueArchiveCharacter.normalizeName(ammo) : true)
+                && ((school) ? ba.BlueArchiveCharacter.normalizeName(value.info.school) === ba.BlueArchiveCharacter.normalizeName(school) : true)
+                && ((role) ? ba.BlueArchiveCharacter.normalizeName(value.character.role) === ba.BlueArchiveCharacter.normalizeName(role) : true)
+                && ((position) ? ba.BlueArchiveCharacter.normalizeName(value.character.position) === ba.BlueArchiveCharacter.normalizeName(position) : true)
+                && ((weapon) ? ba.BlueArchiveCharacter.normalizeName(value.character.weaponType) === ba.BlueArchiveCharacter.normalizeName(weapon) : true)
                 && value.isPlayable
                 && value.character.name !== "???"
                 && value.character.name !== "LocalizeError"
@@ -122,34 +129,6 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
                 return null;
             }
 
-            return data.map(value => value.character.name).sort();
-        }
-        else {
-            console.error("Invalid character identifier", {
-                identifier,
-                "type": typeof identifier
-            });
-        }
-    }
-
-    static getCharacterByArmor (identifier) {
-        if (identifier instanceof BlueArchiveCharacter) {
-            return identifier;
-        }
-        else if (typeof identifier === "string") {
-            const values = [...BlueArchiveCharacter.data.values()];
-            const data = values.filter(value => 
-                BlueArchiveCharacter.normalizeName(value.character.armorType) === BlueArchiveCharacter.normalizeName(identifier)
-                && value.isPlayable
-                && value.character.name !== "???"
-                && value.character.name !== "LocalizeError"
-            );
-
-            if (!data.length) {
-                return null;
-            }
-
-            // return character name with sorted by alphabet
             return data.map(value => value.character.name).sort();
         }
         else {
@@ -178,7 +157,7 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
                     armorType: this.fixArmorType(key.ArmorType),
                     bulletType: (key.BulletType === "Pierce") ? "Penetration" : key.BulletType,
                     position: key.TacticRange,
-                    role: key.TacticRole,
+                    role: this.fixRoleType(key.TacticRole),
                     squadType: (key.SquadType === "Main") ? "Striker" : "Special",
                     weaponType: key.WeaponType,
                 },
@@ -206,7 +185,7 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
             BlueArchiveCharacter.data.set(key.Id, characterSet);
         }
 
-        console.log(`${chalk.green("[Loader]")} || ${chalk.red("Loaded")} ${chalk.yellow(BlueArchiveCharacter.data.size)} ${chalk.red("character data")}`);
+        console.log(`${chalk.green("[LOADER]")} || ${chalk.red("Loaded")} ${chalk.yellow(BlueArchiveCharacter.data.size)} ${chalk.red("character data")}`);
     }
 
     static destroy () {
@@ -221,6 +200,17 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
         }
 
         return types[armorType] ?? "???";
+    }
+
+    static fixRoleType (roleType) {
+        const types = {
+            "DamageDealer": "Attacker",
+            "Tanker": "Tanker",
+            "Healer": "Healer",
+            "Supporter": "Supporter"
+        }
+
+        return types[roleType] ?? "???";
     }
 
     /**
