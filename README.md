@@ -55,22 +55,85 @@ Get Character by Name or ID:
   https://api.torikushi.xyz/character/10015
 ```
 
-### This endpoint is still under development
-- [https://api.torikushi.xyz/character/getArmor?type=(Armor Type)](https://api.torikushi.xyz/character/getArmor?type=(ArmorType))
-- [https://api.torikushi.xyz/character/getBullet?type=(Ammo Type)](https://api.torikushi.xyz/character/getBullet?type=(ArmorType))
-- [https://api.torikushi.xyz/?list=raid](https://api.torikushi.xyz/?list=raid) (Display all current raid and future raids)
-```
-Get Character by Armor Type or Ammo Type
-- Armor Type: 
-  - Heavy Armor: https://api.torikushi.xyz/character/getArmor?type=heavy%20armor
-  - Light Armor: https://api.torikushi.xyz/character/getArmor?type=light%20armor
-  - Special Armor: https://api.torikushi.xyz/character/getArmor?type=special%20armor
+### Query list example
+`Get characters by role`
 
-- Bullet Type:
-  - Explosion: https://api.torikushi.xyz/character/getBullet?type=explosion
-  - Mystic: https://api.torikushi.xyz/character/getBullet?type=mystic
-  - Penetration: https://api.torikushi.xyz/character/getBullet?type=penetration
-```
+    Role list:
+     - Attacker
+     - Healer
+     - Supporter
+     - Tanker
+
+    https://api.torikushi.xyz/character/query?role=attacker
+
+`Get characters by type`
+
+    Type list:
+     - Special
+     - Striker
+
+    https://api.torikushi.xyz/character/query?type=special
+
+`Get chracters by school`
+
+    School list:
+     - Abydos
+     - Gehenna
+     - Hyakkiyako
+     - Millennium
+     - Shanhaijing
+     - Trinity
+
+    https://api.torikushi.xyz/character/query?school=abydos
+
+`Get characters by position`
+
+    Position list:
+     - Front
+     - Middle
+     - Back
+
+    https://api.torikushi.xyz/character/query?position=front
+
+`Get characters by weapon`
+
+    Weapon list:
+     - AR
+     - GL
+     - HG
+     - MG
+     - MT
+     - RF
+     - RG
+     - RL
+     - SG
+     - SMG
+     - SR
+
+    https://api.torikushi.xyz/character/query?weapon=ar
+
+`Get characters by damage`
+
+    Damage list:
+     - Explosion
+     - Mystic
+     - Penetration
+
+    https://api.torikushi.xyz/character/query?damage=explosion
+
+`Get characters by armor`
+
+    Armor list:
+     - Heavy Armor
+     - Light Armor
+     - Special Armor
+
+    https://api.torikushi.xyz/character/query?armor=heavy%20armor
+
+### Get character with multiple queries
+Support multiple queries
+
+    https://api.torikushi.xyz/character/query?armor=special%20armor&position=front&damage=explosion
 
 All drop rate were taken and parsed from this [Google Doc](https://docs.google.com/spreadsheets/d/1Pqfk8z-VvtISddqrx_tBw_vv24DgnuBMcgU8frddjKg/)
 
