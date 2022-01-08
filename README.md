@@ -1,3 +1,4 @@
+
 # Blue Archive API
 
 ## *This API data is mainly based from global version of Blue Archive*
@@ -26,7 +27,7 @@ If you want to have the API running on a different port, change the port on `app
 
 ### Usage
 
-- [api.torikushi.xyz/equipment/](https://api.torikushi.xyz/equipment)
+- [https://api.torikushi.xyz/equipment/](https://api.torikushi.xyz/equipment)
 ```
 Get equipment by name id or tier
 
@@ -54,6 +55,8 @@ Get Character by Name or ID:
 - Character ID: 10015 (Alice)
   https://api.torikushi.xyz/character/10015
 ```
+### Display all current and future raids
+- [https://api.torikushi.xyz/?list=raid](https://api.torikushi.xyz/?list=raid)
 
 ### Query list example
 `Get characters by role`
