@@ -133,7 +133,7 @@ Get Character by Name or ID:
 ### Get character with multiple queries
 Support multiple queries
 
-    https://api.torikushi.xyz/character/query?armor=special%20armor&position=front&damage=explosion
+    https://api.torikushi.xyz/character/query?armor=special%20armor&position=front&damage=penetration
 
 All drop rate were taken and parsed from this [Google Doc](https://docs.google.com/spreadsheets/d/1Pqfk8z-VvtISddqrx_tBw_vv24DgnuBMcgU8frddjKg/)
 
