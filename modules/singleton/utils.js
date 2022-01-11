@@ -23,10 +23,10 @@ exports.getSkillData = async (name) => {
         for (const key of skill) {
             stuff.push({
                 "level": key.Level,
-                "name": (await this.getSkillInfo(key.LocalizeSkillId)).name,
-                "description": (await this.getSkillInfo(key.LocalizeSkillId)).description,
-                "skillCost": key.SkillCost,
-                "bulletType": key.BulletType
+                "name": (await this.getSkillInfo(key.LocalizeSkillId))?.name,
+                "description": (await this.getSkillInfo(key.LocalizeSkillId))?.description,
+                "skillCost": key?.SkillCost,
+                "bulletType": key?.BulletType
             });
         }
     }

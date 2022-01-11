@@ -110,12 +110,22 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
             return identifier;
         }
         else if (typeof identifier === "object") {
-            const { type, armor, ammo, school, role, position, weapon } = identifier;
+            const { type, armor, damage, school, role, position, weapon } = identifier;
+            if (type === undefined
+                && armor === undefined
+                && damage === undefined
+                && school === undefined
+                && role === undefined
+                && position === undefined
+                && weapon === undefined) {
+                return null;
+            }
+
             const values = [...BlueArchiveCharacter.data.values()];
             const data = values.filter(value => 
                 ((type) ? ba.BlueArchiveCharacter.normalizeName(value.character.squadType) === ba.BlueArchiveCharacter.normalizeName(type) : true)
                 && ((armor) ? ba.BlueArchiveCharacter.normalizeName(value.character.armorType) === ba.BlueArchiveCharacter.normalizeName(armor) : true)
-                && ((ammo) ? ba.BlueArchiveCharacter.normalizeName(value.character.bulletType) === ba.BlueArchiveCharacter.normalizeName(ammo) : true)
+                && ((damage) ? ba.BlueArchiveCharacter.normalizeName(value.character.bulletType) === ba.BlueArchiveCharacter.normalizeName(damage) : true)
                 && ((school) ? ba.BlueArchiveCharacter.normalizeName(value.info.school) === ba.BlueArchiveCharacter.normalizeName(school) : true)
                 && ((role) ? ba.BlueArchiveCharacter.normalizeName(value.character.role) === ba.BlueArchiveCharacter.normalizeName(role) : true)
                 && ((position) ? ba.BlueArchiveCharacter.normalizeName(value.character.position) === ba.BlueArchiveCharacter.normalizeName(position) : true)
