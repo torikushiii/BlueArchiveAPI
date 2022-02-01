@@ -97,14 +97,6 @@ module.exports = class Utils extends require("./template") {
         return Utils.module;
     }
 
-    static async init () {
-        // this.#localizeEtc = await ba.Query.get("LocalizeEtc");
-        // this.#statData = await ba.Query.get("CharacterStat");
-        // this.#characterLocalize = await ba.Query.get("CharacterLocalize");
-        // this.#skillLocalize = await ba.Query.get("SkillLocalize");
-        // this.#skillList = await ba.Query.get("SkillListTable");
-    }
-
     async getSkillInfo (ID) {
         if (!this.#skillLocalize) {
             this.#skillLocalize = await ba.Query.get("SkillLocalize");
