@@ -10,8 +10,8 @@ module.exports = (async function (namespace, options = {}) {
 
     const files = [
         "singleton/query",
-        "singleton/utils",
         "singleton/cache",
+        "singleton/utils",
 
         "classes/equipment",
         "classes/stage",
@@ -43,6 +43,7 @@ module.exports = (async function (namespace, options = {}) {
                 case "query": {
                     const Component = require("./singleton/query");
                     ba.Query = Component.singleton();
+                    await new Promise(resolve => setTimeout(resolve, 500));
                     break;
                 }
 
@@ -53,7 +54,8 @@ module.exports = (async function (namespace, options = {}) {
                 }
 
                 case "utils": {
-                    ba.Utils = require("./singleton/utils");
+                    const Component = require("./singleton/utils");
+                    ba.Utils = Component.singleton();
                     break;
                 }
             }
