@@ -103,7 +103,7 @@ module.exports = class Utils extends require("./template") {
         }
         
         for (const keyData in this.#skillLocalize) {
-            if (this.#skillLocalize.Key === ID) {
+            if (this.#skillLocalize[keyData].Key === ID) {
                 return {
                     "name": this.#skillLocalize[keyData]?.NameEn ?? null,
                     "description": (this.#skillLocalize[keyData]?.DescriptionEn) ? this.#skillLocalize[keyData].DescriptionEn.replace(/\[([^\]]+)\]/g, "") : null,
@@ -114,7 +114,7 @@ module.exports = class Utils extends require("./template") {
 
     async getSkillData (name) {
         if (!this.#skillList) {
-            this.#skillList = await ba.Query.get("LocalizeEtc");
+            this.#skillList = await ba.Query.get("SkillListTable");
         }
         
         const stuff = [];
