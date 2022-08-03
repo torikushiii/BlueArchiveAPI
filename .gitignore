@@ -75,6 +75,9 @@ typings/
 # FuseBox cache
 .fusebox/
 
+# bun
+bun.lockb
+
 assets/
 modules/config.js
 types.js
