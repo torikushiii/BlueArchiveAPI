@@ -49,7 +49,8 @@
 		app.use(`/${route}`, require(`./routes/${route}`));
 	}
 
-	app.use(async (err, req, res) => {
+	/* eslint-disable no-unused-vars */
+	app.use(async (err, req, res, next) => {
 		if (err instanceof URIError) {
 			res.set("Content-Type", "application/json");
 			res.status(400);
