@@ -134,7 +134,7 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
                 && value.character.name !== "LocalizeError"
 			);
 
-			if (!data.length) {
+			if (data.length === 0) {
 				return null;
 			}
 
