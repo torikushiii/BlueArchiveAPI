@@ -43,7 +43,7 @@ module.exports = class BlueArchiveDrop extends require("./template") {
 		else if (typeof identifier === "number") {
 			const values = [...BlueArchiveDrop.data.values()];
 			const filtered = values.filter(value => value.stageRewardID === identifier);
-			return filtered.length ? filtered : null;
+			return (filtered.length !== 0) ? filtered : null;
 		}
 		else {
 			console.error("Invalid identifier type. Must be a number!", {
@@ -80,11 +80,14 @@ module.exports = class BlueArchiveDrop extends require("./template") {
 					getStageName.subChapter = getStageName.subChapter.replace(/Stage/g, "Stage ");
 				}
 
+				const stageName = (getStageName)
+					? `${ba.Utils.removeWhitespace(`[${getStageName.difficulty}] ${getStageName.type} ${getStageName.chapter} - ${getStageName.subChapter}`)}`
+					: "???";
+				
 				const dropObj = new BlueArchiveDrop({
-					stageName: (getStageName) ? `${ba.Utils.wrapString(`[${getStageName.difficulty}] ${getStageName.type} ${getStageName.chapter} - ${getStageName.subChapter}`)}` : "???",
+					stageName,
 					stageInfo: {
-						ID: data[i].GroupId,
-						stageData: `http${ba.Config.secure ? "s" : ""}://${ba.Config.hostname}/stage/${data[i].GroupId}`
+						ID: data[i].GroupId
 					},
 					stageRewardID: data[i].StageRewardId,
 					dropAmount: data[i].StageRewardAmount,

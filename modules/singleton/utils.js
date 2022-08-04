@@ -119,7 +119,7 @@ module.exports = class Utils extends require("./template") {
         
 		const stuff = [];
 		const skill = this.#skillList.filter(skill => skill.GroupId === name);
-		if (skill.length) {
+		if (skill.length !== 0) {
 			for (const key of skill) {
 				stuff.push({
 					level: key.Level,
@@ -335,16 +335,12 @@ module.exports = class Utils extends require("./template") {
 		}
 	}
 
-	wrapString (string, length, options = {}) {
+	removeWhitespace (string) {
 		if (typeof string !== "string") {
 			return "Provided input must be a string";
 		}
     
-		if (!options.keepWhitespace) {
-			string = string.replace(/\r?\n/g, " ").replace(/\s+/g, " ");
-		}
-    
-		return (string.length >= length) ? `${string.slice(0, length - 1)}...` : string;
+		return string.replace(/\s+/g, " ").trim();
 	}
 
 	capitalize (string) {
