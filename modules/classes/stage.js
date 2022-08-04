@@ -77,7 +77,7 @@ module.exports = class BlueArchiveStage extends require("./template") {
 		}
 		else if (typeof identifier === "number") {
 			const values = [...BlueArchiveStage.data.values()];
-			return values.find(stage => stage.ID === identifier) ?? "No stage exists with this ID";
+			return values.find(stage => stage.ID === identifier) ?? null;
 		}
 		else {
 			console.error("Invalid identifier type. Must be a number!", {
@@ -122,20 +122,22 @@ module.exports = class BlueArchiveStage extends require("./template") {
 	static async loadData () {
 		const data = await ba.Query.get("StageDataMain");
 		for (const stage of data) {
-			const [fullName, chapter, difficulty, type, subChapter] = stage.Name.match(/^(.+?)_(.+?)_(.+?)_(.+?)$/); // TODO: Find better way to parse stage name.
+			const stageData = stage.Name.split("_");
+			const stageMeta = {
+				type: stageData[0],
+				difficulty: stageData[1],
+				chapter: stageData[2],
+				subChapter: stageData[3],
+				fullName: stage.Name
+			};
+
 			const stageSet = new BlueArchiveStage({
 				ID: stage.Id,
 				minRank: stage.RecommandLevel,
 				staminaCost: stage.StageEnterCostAmount,
 				battleDuration: `${stage.BattleDuration / 1000}s`,
 				maxTurns: stage.MaxTurn,
-				stageInfo: {
-					type,
-					difficulty,
-					chapter,
-					subChapter,
-					fullName
-				},
+				stageInfo: stageMeta,
 				objective: {
 					objectiveOne: "Mission Complete",
 					objectiveTwo: `Acquire S rank ${stage.StarConditionTacticRankSCount} time(s).`,
