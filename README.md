@@ -31,7 +31,7 @@ this file documents the public endpoints.
 
 ## Reference
 
-**BASE URL:** `https://api.torikushi.xyz/`
+**BASE URL:** `https://api.torikushi.xyz/` (domain is currently dead)
 
 ## Routes
 
@@ -40,7 +40,9 @@ Get Equipment by Tier or ID
 
 > [https://api.torikushi.xyz/equipment/](https://api.torikushi.xyz/equipment)
 
-> GET `equipment/:equipment` | `equipment/t1%20hairpin` | `equipment/6000` | `equipment/Tennis%20Headband`
+> GET `equipment/:equipment` | `equipment/t1%20hairpin` | `equipment/Tennis%20Headband`
+
+> GET `equipment/6000?id=true` You need to pass `?id=true` to get equipment by ID
 
 > Returns: `Equipment Object`
 <details>
@@ -131,7 +133,9 @@ Get a single character
 
 > [https://api.torikushi.xyz/character/](https://api.torikushi.xyz/character)
 
-> GET `character/:character`| `character/aru` | `character/10015`
+> GET `character/:character` | `character/aru`
+
+> GET `character/10015` You need to pass `?id=true` to get character by ID
 
 > Returns: `Character Object`
 <details>
