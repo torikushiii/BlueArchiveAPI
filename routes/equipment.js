@@ -8,7 +8,9 @@ module.exports = (function () {
 		res.set("Content-Type", "application/json");
 		res.status(400).send({
 			status: 400,
-			data: "No equipment ID is given!"
+			error: {
+				message: "No argument is given!"
+			}
 		});
 	});
 
@@ -20,21 +22,26 @@ module.exports = (function () {
 			if (isId) {
 				const cache = await ba.Cache.get(req.params.id);
 				if (cache) {
-					return res.status(200).send({
+					res.status(200).send({
 						status: 200,
 						data: cache.data,
 						drop: cache.drop
 					});
+
+					return;
 				}
 
 				const data = ba.BlueArchiveEquipment.get(Number(req.params.id));
 				if (data) {
 					const drops = ba.BlueArchiveDrop.get(data?.ID) ?? [];
-					return res.status(200).send({
+
+					res.status(200).send({
 						status: 200,
 						data,
 						drop: drops
 					});
+
+					return;
 				}
 			}
 		}
@@ -48,11 +55,13 @@ module.exports = (function () {
 				if (id) {
 					const cache = await ba.Cache.get(id);
 					if (cache) {
-						return res.status(200).send({
+						res.status(200).send({
 							status: 200,
 							data: cache.data,
 							drop: cache.drop
 						});
+
+						return;
 					}
 
 					const data = ba.BlueArchiveEquipment.get(id);
@@ -64,7 +73,7 @@ module.exports = (function () {
 							drop: drops
 						});
 
-						return await ba.Cache.set({
+						await ba.Cache.set({
 							key: id,
 							value: JSON.stringify({
 								data,
@@ -72,17 +81,21 @@ module.exports = (function () {
 							}),
 							expireAt: 1_800_000
 						});
+
+						return;
 					}
 				}
 			}
 
 			const cache = await ba.Cache.get(item);
 			if (cache) {
-				return res.status(200).send({
+				res.status(200).send({
 					status: 200,
 					data: cache.data,
 					drop: cache.drop
 				});
+
+				return;
 			}
 
 			const data = ba.BlueArchiveEquipment.get(item);
@@ -94,7 +107,7 @@ module.exports = (function () {
 					drop: drops
 				});
 
-				return await ba.Cache.set({
+				await ba.Cache.set({
 					key: item,
 					value: JSON.stringify({
 						data,
@@ -102,13 +115,16 @@ module.exports = (function () {
 					}),
 					expireAt: 1_800_000
 				});
+
+				return;
 			}
 		}
 
 		res.status(404).send({
 			status: 404,
-			data: "No equipment exists with this ID / Name",
-			drop: []
+			error: {
+				message: "No equipment exists with this ID / Name!"
+			}
 		});
 	});
 
