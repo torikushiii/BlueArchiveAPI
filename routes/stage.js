@@ -1,11 +1,7 @@
-module.exports = (function () {
-	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
+module.exports = function (fastify, opts, done) {
+	const Router = fastify;
 
 	Router.get("/", (req, res) => {
-		res.set("Content-Type", "application/json");
 		res.status(200).send({
 			status: 200,
 			data: "No stage ID is given!"
@@ -13,8 +9,6 @@ module.exports = (function () {
 	});
 
 	Router.get("/:id", async (req, res) => {
-		res.set("Content-Type", "application/json");
-
 		const stageId = Number.isInteger(Number(req.params.id));
 		if (!stageId) {
 			res.status(400).send({
@@ -79,5 +73,5 @@ module.exports = (function () {
 		}
 	});
 
-	return Router;
-})();
+	done();
+};

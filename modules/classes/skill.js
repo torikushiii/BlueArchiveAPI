@@ -1,4 +1,4 @@
-const chalk = require("chalk");
+const logger = require("../../lib/logger");
 
 module.exports = class BlueArchiveSkill extends require("./template") {
 	static data = new Map();
@@ -74,7 +74,7 @@ module.exports = class BlueArchiveSkill extends require("./template") {
 			BlueArchiveSkill.data.set(i, skillData);
 		}
 
-		console.log(`${chalk.green("[LOADER]")} || ${chalk.red("Loaded")} ${chalk.yellow(BlueArchiveSkill.data.size)} ${chalk.red("skill data")}`);
+		logger.warn(`Loaded ${BlueArchiveSkill.data.size} skill data`);
 	}
 
 	static destroy () {

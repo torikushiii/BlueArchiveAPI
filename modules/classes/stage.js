@@ -1,4 +1,4 @@
-const chalk = require("chalk");
+const logger = require("../../lib/logger");
 
 module.exports = class BlueArchiveStage extends require("./template") {
 	static data = new Map();
@@ -106,13 +106,14 @@ module.exports = class BlueArchiveStage extends require("./template") {
 
 	static async getRaids () {
 		const stages = [];
+		
 		const raidData = await ba.Query.get("RaidData");
 		for (const raid of raidData) {
 			stages.push({
 				seasonId: raid.SeasonId,
 				bossName: (raid.OpenRaidBossGroup)[0],
-				startAt: raid.SeasonStartData,
-				endAt: raid.SeasonEndData
+				startAt: new Date(raid.SeasonStartData),
+				endAt: new Date(raid.SeasonEndData)
 			});
 		}
 
@@ -154,7 +155,7 @@ module.exports = class BlueArchiveStage extends require("./template") {
 			BlueArchiveStage.data.set(stage.Id, stageSet);
 		}
 
-		console.log(`${chalk.green("[LOADER]")} || ${chalk.red("Loaded")} ${chalk.yellow(BlueArchiveStage.data.size)} ${chalk.red("stage data")}`);
+		logger.warn(`Loaded ${BlueArchiveStage.data.size} stage data`);
 	}
 
 	static destroy () {

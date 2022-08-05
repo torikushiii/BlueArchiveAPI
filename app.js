@@ -1,99 +1,41 @@
-(async function () {
-	"use strict";
+const fastify = require("./lib/fastify");
+const logger = require("./lib/logger");
 
+(async function () {
 	require("./db-access");
 	await require("./modules/index")();
 	const subroutes = [
 		"character",
 		"equipment",
-		"stage"
+		"stage",
+		"raid"
 	];
 
-	const port = ba.Config.port;
-	const bodyParser = require("body-parser");
+	const config = ba.Config;
+	if (!config.host || !config.port) {
+		logger.error("Config file is missing host or port");
+		process.exit(1);
+	}
 
-	const Express = require("express");
-	require("express-async-errors");
-
-	const app = Express();
-	app.use(bodyParser.json());
-	app.use(bodyParser.urlencoded({ extended: true }));
-
-	// robots.txt - disallow all
-	app.get("/robots.txt", (req, res) => {
+	fastify.get("/robots.txt", (req, res) => {
 		res.type("text/plain");
 		res.send("User-agent: *\nDisallow: /");
 	});
 
-	app.get("/", async (req, res) => {
-		res.set("Content-Type", "application/json");
-		if (Object.keys(req.query).length) {
-			const { list } = req.query;
-			if (list === "raid") {
-				res.status(200);
-				return res.send({
-					status: 200,
-					data: await ba.BlueArchiveStage.getRaids()
-				});
-			}
-		}
-
-		res.status(200);
-		res.send({
+	fastify.get("/", async (req, res) => {
+		res.status(200).send({
 			status: 200,
 			endpoints: subroutes
 		});
 	});
 
 	for (const route of subroutes) {
-		app.use(`/${route}`, require(`./routes/${route}`));
+		fastify.register(require(`./routes/${route}`), { prefix: `/${route}` });
 	}
 
-	/* eslint-disable no-unused-vars */
-	app.use(async (err, req, res, next) => {
-		if (err instanceof URIError) {
-			res.set("Content-Type", "application/json");
-			res.status(400);
-			res.send({
-				status: 400,
-				message: "Invalid URI"
-			});
-		}
-
-		console.error("API Error", { err, req, res });
-
-		try {
-			const requestID = await ba.Query.getRowID("error");
-			ba.Query.set("error", {
-				request: requestID,
-				message: err.message ?? null,
-				stack: err.stack ?? null
-			});
-
-			res.set("Content-Type", "application/json");
-			return res.status(500).send({
-				status: 500,
-				message: `Internal Server Error (ID ${requestID})`
-			});
-		}
-		catch (e) {
-			console.error("Error while trying to log error", e);
-
-			res.set("Content-Type", "application/json");
-			return res.status(500).send({
-				status: 500,
-				message: "Internal Server Error"
-			});
-		}
+	fastify.get("*", (req, res) => {
+		res.notFound("That endpoint does not exist");
 	});
 
-	app.get("*", (req, res) => {
-		res.status(404);
-		res.send({
-			status: 404,
-			message: "Endpoint Does Not Exists"
-		});
-	});
-
-	app.listen(port, () => console.log(`BlueArchive API Running on ${port}`));
+	fastify.listen({ port: config.port, host: config.host });
 })();

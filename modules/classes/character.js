@@ -1,4 +1,4 @@
-const chalk = require("chalk");
+const logger = require("../../lib/logger");
 
 module.exports = class BlueArchiveCharacter extends require("./template") {
 	static data = new Map();
@@ -194,7 +194,7 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
 			BlueArchiveCharacter.data.set(key.Id, characterSet);
 		}
 
-		console.log(`${chalk.green("[LOADER]")} || ${chalk.red("Loaded")} ${chalk.yellow(BlueArchiveCharacter.data.size)} ${chalk.red("character data")}`);
+		logger.info(`Loaded ${BlueArchiveCharacter.data.size} character data`);
 	}
 
 	static destroy () {

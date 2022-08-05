@@ -1,4 +1,4 @@
-const chalk = require("chalk");
+const logger = require("../../lib/logger");
 
 module.exports = class BlueArchiveDrop extends require("./template") {
 	static data = new Map();
@@ -98,7 +98,7 @@ module.exports = class BlueArchiveDrop extends require("./template") {
 			}
 		}
 
-		console.log(`${chalk.green("[LOADER]")} || ${chalk.red("Loaded")} ${chalk.yellow(BlueArchiveDrop.data.size)} ${chalk.red("drop data")}`);
+		logger.warn(`Loaded ${BlueArchiveDrop.data.size} drop data`);
 	}
 
 	static destroy () {

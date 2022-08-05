@@ -1,11 +1,7 @@
-module.exports = (function () {
-	"use strict";
-
-	const Express = require("express");
-	const Router = Express.Router();
+module.exports = function (fastify, opts, done) {
+	const Router = fastify;
 
 	Router.get("/", (req, res) => {
-		res.set("Content-Type", "application/json");
 		res.status(400).send({
 			status: 400,
 			error: {
@@ -15,8 +11,6 @@ module.exports = (function () {
 	});
 
 	Router.get("/:id", async (req, res) => {
-		res.set("Content-Type", "application/json");
-
 		if (req.query.id) {
 			const isId = Boolean(req.query.id === "true");
 			if (isId) {
@@ -128,5 +122,5 @@ module.exports = (function () {
 		});
 	});
 
-	return Router;
-})();
+	done();
+};
