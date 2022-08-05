@@ -7,7 +7,7 @@ An API that primarily focused on drop rate of each stages on Blue Archive.
 
 Now Support Characters Data!
 
-**Hosted API at https://api.torikushi.xyz!**
+**Hosted API at https://api.torikushi.xyz!** (domain is currently dead)
 
 ## Prerequisites
 
@@ -31,7 +31,7 @@ this file documents the public endpoints.
 
 ## Reference
 
-**BASE URL:** `https://api.torikushi.xyz/` (domain is currently dead)
+**BASE URL:** `https://api.torikushi.xyz/`
 
 ## Routes
 
@@ -601,7 +601,7 @@ Get a single character
 
 ## Get Raids
 Display all current and future raids
-> [https://api.torikushi.xyz/?list=raid](https://api.torikushi.xyz/?list=raid)
+> [https://api.torikushi.xyz/raid](https://api.torikushi.xyz/raid)
 
 > Returns : `Raid Object`
 <details>
