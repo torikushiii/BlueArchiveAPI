@@ -43,7 +43,7 @@ module.exports = class BlueArchiveDrop extends require("./template") {
 		else if (typeof identifier === "number") {
 			const values = [...BlueArchiveDrop.data.values()];
 			const filtered = values.filter(value => value.stageRewardID === identifier);
-			return (filtered.length !== 0) ? filtered : null;
+			return (filtered.length !== 0) ? filtered : [];
 		}
 		else {
 			console.error("Invalid identifier type. Must be a number!", {

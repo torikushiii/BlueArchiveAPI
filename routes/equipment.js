@@ -19,7 +19,7 @@ module.exports = function (fastify, opts, done) {
 					res.status(200).send({
 						status: 200,
 						data: cache.data,
-						drop: cache.drop
+						drops: cache.drops
 					});
 
 					return;
@@ -32,7 +32,7 @@ module.exports = function (fastify, opts, done) {
 					res.status(200).send({
 						status: 200,
 						data,
-						drop: drops
+						drops
 					});
 
 					return;
@@ -52,7 +52,7 @@ module.exports = function (fastify, opts, done) {
 						res.status(200).send({
 							status: 200,
 							data: cache.data,
-							drop: cache.drop
+							drops: cache.drops
 						});
 
 						return;
@@ -64,14 +64,14 @@ module.exports = function (fastify, opts, done) {
 						res.status(200).send({
 							status: 200,
 							data,
-							drop: drops
+							drops
 						});
 
 						await ba.Cache.set({
 							key: id,
 							value: JSON.stringify({
 								data,
-								drop: drops
+								drops
 							}),
 							expireAt: 1_800_000
 						});
@@ -86,7 +86,7 @@ module.exports = function (fastify, opts, done) {
 				res.status(200).send({
 					status: 200,
 					data: cache.data,
-					drop: cache.drop
+					drops: cache.drops
 				});
 
 				return;
@@ -94,18 +94,18 @@ module.exports = function (fastify, opts, done) {
 
 			const data = ba.BlueArchiveEquipment.get(item);
 			if (data) {
-				const drops = ba.BlueArchiveDrop.get(data?.ID) ?? [];
+				const drops = ba.BlueArchiveDrop.get(data?.ID);
 				res.status(200).send({
 					status: 200,
 					data,
-					drop: drops
+					drops
 				});
 
 				await ba.Cache.set({
 					key: item,
 					value: JSON.stringify({
 						data,
-						drop: drops
+						drops
 					}),
 					expireAt: 1_800_000
 				});
