@@ -42,7 +42,7 @@ module.exports = function (fastify, opts, done) {
 		else {
 			const item = req.params.id.toLowerCase();
 
-			const tierRegex = /^t[1-6] (.*)$/;
+			const tierRegex = /^t[1-9] (.*)$/;
 			const tierMatch = item.match(tierRegex);
 			if (tierMatch) {
 				const id = await ba.Utils.getEquipmentTypes(item);
