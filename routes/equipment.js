@@ -2,12 +2,7 @@ module.exports = function (fastify, opts, done) {
 	const Router = fastify;
 
 	Router.get("/", (req, res) => {
-		res.status(400).send({
-			status: 400,
-			error: {
-				message: "No argument is given!"
-			}
-		});
+		res.badRequest("No equipment found");
 	});
 
 	Router.get("/:id", async (req, res) => {
@@ -16,8 +11,7 @@ module.exports = function (fastify, opts, done) {
 			if (isId) {
 				const cache = await ba.Cache.get(req.params.id);
 				if (cache) {
-					res.status(200).send({
-						status: 200,
+					res.send({
 						data: cache.data,
 						drops: cache.drops
 					});
@@ -29,8 +23,7 @@ module.exports = function (fastify, opts, done) {
 				if (data) {
 					const drops = ba.BlueArchiveDrop.get(data?.ID) ?? [];
 
-					res.status(200).send({
-						status: 200,
+					res.send({
 						data,
 						drops
 					});
@@ -49,8 +42,7 @@ module.exports = function (fastify, opts, done) {
 				if (id) {
 					const cache = await ba.Cache.get(id);
 					if (cache) {
-						res.status(200).send({
-							status: 200,
+						res.send({
 							data: cache.data,
 							drops: cache.drops
 						});
@@ -61,8 +53,7 @@ module.exports = function (fastify, opts, done) {
 					const data = ba.BlueArchiveEquipment.get(id);
 					if (data) {
 						const drops = ba.BlueArchiveDrop.get(data?.ID) ?? [];
-						res.status(200).send({
-							status: 200,
+						res.send({
 							data,
 							drops
 						});
@@ -83,8 +74,7 @@ module.exports = function (fastify, opts, done) {
 
 			const cache = await ba.Cache.get(item);
 			if (cache) {
-				res.status(200).send({
-					status: 200,
+				res.send({
 					data: cache.data,
 					drops: cache.drops
 				});
@@ -95,8 +85,7 @@ module.exports = function (fastify, opts, done) {
 			const data = ba.BlueArchiveEquipment.get(item);
 			if (data) {
 				const drops = ba.BlueArchiveDrop.get(data?.ID);
-				res.status(200).send({
-					status: 200,
+				res.send({
 					data,
 					drops
 				});
@@ -114,12 +103,7 @@ module.exports = function (fastify, opts, done) {
 			}
 		}
 
-		res.status(404).send({
-			status: 404,
-			error: {
-				message: "No equipment exists with this ID / Name!"
-			}
-		});
+		res.notFound("No equipment exists with this ID / Name!");
 	});
 
 	done();

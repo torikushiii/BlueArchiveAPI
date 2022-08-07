@@ -2,29 +2,20 @@ module.exports = function (fastify, opts, done) {
 	const Router = fastify;
 
 	Router.get("/", (req, res) => {
-		res.status(200).send({
-			status: 200,
-			data: "No stage ID is given!"
-		});
+		res.send({ data: "No stage ID is given!" });
 	});
 
 	Router.get("/:id", async (req, res) => {
 		const stageId = Number.isInteger(Number(req.params.id));
 		if (!stageId) {
-			res.status(400).send({
-				status: 400,
-				error: {
-					message: "Stage ID must be an number!"
-				}
-			});
+			res.badRequest("Stage ID must be an number!");
 
 			return;
 		}
 
 		const cache = await ba.Cache.get(req.params.id);
 		if (cache) {
-			res.status(200).send({
-				status: 200,
+			res.send({
 				data: cache.data,
 				drops: cache.drops
 			});
@@ -44,11 +35,7 @@ module.exports = function (fastify, opts, done) {
 				}
 			}
 
-			res.status(200).send({
-				status: 200,
-				data,
-				drops
-			});
+			res.send({ data, drops });
 
 			await ba.Cache.set({
 				key: data.ID,
@@ -62,12 +49,7 @@ module.exports = function (fastify, opts, done) {
 			return;
 		}
 		else {
-			res.status(404).send({
-				status: 404,
-				error: {
-					message: "No stage found with this ID!"
-				}
-			});
+			res.notFound("No stage found with this ID!");
 
 			return;
 		}

@@ -4,18 +4,10 @@ module.exports = function (fastify, opts, done) {
 	Router.get("/", async (req, res) => {
 		const data = await ba.BlueArchiveStage.getRaids();
 		if (data.length !== 0) {
-			res.status(200).send({
-				status: 200,
-				data
-			});
+			res.send({ data });
 		}
 		else {
-			res.status(404).send({
-				status: 404,
-				error: {
-					message: "No raids data found!"
-				}
-			});
+			res.notFound("No raid data found");
 		}
 	});
 
