@@ -50,7 +50,6 @@ Get Equipment by Tier or ID
 
 ```json
 {
-    "status": 200,
     "data": {
         "ID": 6000,
         "name": "Tennis Headband",
@@ -62,7 +61,7 @@ Get Equipment by Tier or ID
         "tier": 1,
         "tags": ["Equipment", "Hairpin"]
     },
-    "drop": [
+    "drops": [
         {
             "stageName": "[Normal] Main Chapter 01 - Stage 04",
             "stageInfo": {
@@ -135,7 +134,7 @@ Get a single character
 
 > GET `character/:character` | `character/aru`
 
-> GET `character/10015` You need to pass `?id=true` to get character by ID
+> GET `character/10015?id=true` You need to pass `?id=true` to get character by ID
 
 > Returns: `Character Object`
 <details>
@@ -143,7 +142,6 @@ Get a single character
 
 ```json
 {
-    "status": 200,
     "data": {
         "ID": 10000,
         "isReleased": true,
@@ -609,7 +607,6 @@ Display all current and future raids
 
 ```json
 {
-    "status": 200,
     "data": [
         {
             "seasonId": 1,
@@ -700,7 +697,6 @@ Display all current and future raids
 
 ```json
 {
-    "status": 200,
     "data": [
         "Akari",
         "Aris",
@@ -759,7 +755,6 @@ Display all current and future raids
 
 ```json
 {
-    "status": 200,
     "data": [
         "Airi",
         "Ayane",
@@ -805,7 +800,6 @@ Display all current and future raids
 
 ```json
 {
-    "status": 200,
     "data": [
         "Ayane",
         "Hoshino",
@@ -832,7 +826,6 @@ Display all current and future raids
 
 ```json
 {
-    "status": 200,
     "data": [
         "Eimi",
         "Haruka",
@@ -872,7 +865,6 @@ Display all current and future raids
 
 ```json
 {
-    "status": 200,
     "data": [
         "Akari",
         "Asuna",
@@ -911,7 +903,6 @@ Display all current and future raids
 
 ```json
 {
-    "status": 200,
     "data": [
         "Airi",
         "Akari",
@@ -963,7 +954,6 @@ Display all current and future raids
 
 ```json
 {
-    "status": 200,
     "data": [
         "Akari",
         "Azusa",
@@ -1004,7 +994,7 @@ Support multiple queries
 <summary>View Payload Example</summary>
 
 ```json
-{ "status": 200, "data": ["Sumire", "Tsubaki"] }
+{ "data": ["Sumire", "Tsubaki"] }
 ```
 </details>
 
