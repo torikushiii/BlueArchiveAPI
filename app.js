@@ -23,7 +23,7 @@ const logger = require("./lib/logger");
 	});
 
 	fastify.get("/", async (req, res) => {
-		res.status(200).send({
+		res.send({
 			status: 200,
 			endpoints: subroutes
 		});
