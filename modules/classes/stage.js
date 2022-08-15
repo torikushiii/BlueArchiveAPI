@@ -146,7 +146,7 @@ module.exports = class BlueArchiveStage extends require("./template") {
 				},
 				stageData: {
 					stageTophography: stage.StageTopography,
-					stageEnvorioment: stage.StrategyEnvironment
+					stageEnvironment: stage.StrategyEnvironment
 				},
 				contentType: stage.ContentType,
 				campaignRewardId: stage.CampaignStageRewardId
