@@ -22,7 +22,7 @@ const logger = require("./lib/logger");
 		res.send("User-agent: *\nDisallow: /");
 	});
 
-	fastify.get("/", async (req, res) => {
+	fastify.get("/buruaka/", async (req, res) => {
 		res.send({
 			status: 200,
 			endpoints: subroutes
@@ -30,7 +30,7 @@ const logger = require("./lib/logger");
 	});
 
 	for (const route of subroutes) {
-		fastify.register(require(`./routes/${route}`), { prefix: `/${route}` });
+		fastify.register(require(`./routes/${route}`), { prefix: `buruaka/${route}` });
 	}
 
 	fastify.get("*", (req, res) => {
