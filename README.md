@@ -7,7 +7,7 @@ An API that primarily focused on drop rate of each stages on Blue Archive.
 
 Now Support Characters Data!
 
-**Hosted API at https://api.torikushi.xyz!** (domain is currently dead)
+**Hosted API at https://api.ennead.cc/buruaka !**
 
 ## Prerequisites
 
@@ -31,14 +31,14 @@ this file documents the public endpoints.
 
 ## Reference
 
-**BASE URL:** `https://api.torikushi.xyz/`
+**BASE URL:** `https://api.ennead.cc/buruaka/`
 
 ## Routes
 
 ### Get Equipment
 Get Equipment by Tier or ID
 
-> [https://api.torikushi.xyz/equipment/](https://api.torikushi.xyz/equipment)
+> [https://api.ennead.cc/buruaka/equipment/](https://api.ennead.cc/buruaka/equipment)
 
 > GET `equipment/:equipment` | `equipment/t1%20hairpin` | `equipment/Tennis%20Headband`
 
@@ -66,7 +66,7 @@ Get Equipment by Tier or ID
             "stageName": "[Normal] Main Chapter 01 - Stage 04",
             "stageInfo": {
                 "ID": 1011104,
-                "stageData": "https://api.torikushi.xyz/stage/1011104"
+                "stageData": "https://api.ennead.cc/buruaka/stage/1011104"
             },
             "stageRewardID": 6000,
             "dropAmount": 1,
@@ -76,7 +76,7 @@ Get Equipment by Tier or ID
             "stageName": "[Hard] Main Chapter 01 - Stage 03",
             "stageInfo": {
                 "ID": 1012103,
-                "stageData": "https://api.torikushi.xyz/stage/1012103"
+                "stageData": "https://api.ennead.cc/buruaka/stage/1012103"
             },
             "stageRewardID": 6000,
             "dropAmount": 1,
@@ -86,7 +86,7 @@ Get Equipment by Tier or ID
             "stageName": "[Normal] Main Chapter 02 - Stage 01",
             "stageInfo": {
                 "ID": 1021101,
-                "stageData": "https://api.torikushi.xyz/stage/1021101"
+                "stageData": "https://api.ennead.cc/buruaka/stage/1021101"
             },
             "stageRewardID": 6000,
             "dropAmount": 1,
@@ -96,7 +96,7 @@ Get Equipment by Tier or ID
             "stageName": "[Normal] Main Chapter 02 - Stage 02",
             "stageInfo": {
                 "ID": 1021102,
-                "stageData": "https://api.torikushi.xyz/stage/1021102"
+                "stageData": "https://api.ennead.cc/buruaka/stage/1021102"
             },
             "stageRewardID": 6000,
             "dropAmount": 1,
@@ -106,7 +106,7 @@ Get Equipment by Tier or ID
             "stageName": "[Normal] Main Chapter 02 - Stage 03",
             "stageInfo": {
                 "ID": 1021103,
-                "stageData": "https://api.torikushi.xyz/stage/1021103"
+                "stageData": "https://api.ennead.cc/buruaka/stage/1021103"
             },
             "stageRewardID": 6000,
             "dropAmount": 1,
@@ -116,7 +116,7 @@ Get Equipment by Tier or ID
             "stageName": "[Hard] Main Chapter 02 - Stage 03",
             "stageInfo": {
                 "ID": 1022103,
-                "stageData": "https://api.torikushi.xyz/stage/1022103"
+                "stageData": "https://api.ennead.cc/buruaka/stage/1022103"
             },
             "stageRewardID": 6000,
             "dropAmount": 1,
@@ -130,7 +130,7 @@ Get Equipment by Tier or ID
 ### Get Character
 Get a single character
 
-> [https://api.torikushi.xyz/character/](https://api.torikushi.xyz/character)
+> [https://api.ennead.cc/buruaka/character/](https://api.ennead.cc/buruaka/character)
 
 > GET `character/:character` | `character/aru`
 
@@ -599,7 +599,7 @@ Get a single character
 
 ## Get Raids
 Display all current and future raids
-> [https://api.torikushi.xyz/raid](https://api.torikushi.xyz/raid)
+> [https://api.ennead.cc/buruaka/raid](https://api.ennead.cc/buruaka/raid)
 
 > Returns : `Raid Object`
 <details>
@@ -684,7 +684,7 @@ Display all current and future raids
 
 ### Get characters by role
 
-> https://api.torikushi.xyz/character/query?role=attacker
+> https://api.ennead.cc/buruaka/character/query?role=attacker
 
     Role list:
      - Attacker
@@ -744,7 +744,7 @@ Display all current and future raids
 </details>
 
 ### Get characters by type
-> https://api.torikushi.xyz/character/query?type=special
+> https://api.ennead.cc/buruaka/character/query?type=special
 
     Type list:
      - Special
@@ -785,7 +785,7 @@ Display all current and future raids
 </details>
 
 ### Get chracters by school
-> https://api.torikushi.xyz/character/query?school=abydos
+> https://api.ennead.cc/buruaka/character/query?school=abydos
 
     School list:
      - Abydos
@@ -814,7 +814,7 @@ Display all current and future raids
 </details>
 
 ### Get characters by position
-> https://api.torikushi.xyz/character/query?position=front
+> https://api.ennead.cc/buruaka/character/query?position=front
 
     Position list:
      - Front
@@ -844,7 +844,7 @@ Display all current and future raids
 </details>
 
 ### Get characters by weapon
-> https://api.torikushi.xyz/character/query?weapon=ar
+> https://api.ennead.cc/buruaka/character/query?weapon=ar
 
 
     Weapon list:
@@ -891,7 +891,7 @@ Display all current and future raids
 </details>
 
 ### Get characters by damage
-> https://api.torikushi.xyz/character/query?damage=explosion
+> https://api.ennead.cc/buruaka/character/query?damage=explosion
 
     Damage list:
      - Explosion
@@ -942,7 +942,7 @@ Display all current and future raids
 </details>
 
 ### Get characters by armor
-> https://api.torikushi.xyz/character/query?armor=heavy%20armor
+> https://api.ennead.cc/buruaka/character/query?armor=heavy%20armor
 
     Armor list:
      - Heavy Armor
@@ -988,7 +988,7 @@ Display all current and future raids
 ## Get character with multiple queries
 Support multiple queries
 
-> https://api.torikushi.xyz/character/query?armor=special%20armor&position=front&damage=penetration
+> https://api.ennead.cc/buruaka/character/query?armor=special%20armor&position=front&damage=penetration
 
 <details>
 <summary>View Payload Example</summary>
