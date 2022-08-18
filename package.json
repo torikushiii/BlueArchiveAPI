@@ -18,6 +18,7 @@
   "author": "torikushiii",
   "license": "OSL-3.0",
   "dependencies": {
+    "@fastify/cors": "^8.1.0",
     "@fastify/sensible": "^5.1.0",
     "fastify": "^4.3.0",
     "ioredis": "^5.2.2",
