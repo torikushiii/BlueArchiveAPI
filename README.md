@@ -7,7 +7,7 @@ An API that primarily focused on drop rate of each stages on Blue Archive.
 
 Now Support Characters Data!
 
-**Hosted API at https://api.ennead.cc/buruaka !**
+**Hosted API at https://api.ennead.cc/buruaka** ver: v1.39.146794-patch393
 
 ## Prerequisites
 
