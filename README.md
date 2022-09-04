@@ -65,8 +65,7 @@ Get Equipment by Tier or ID
         {
             "stageName": "[Normal] Main Chapter 01 - Stage 04",
             "stageInfo": {
-                "ID": 1011104,
-                "stageData": "https://api.ennead.cc/buruaka/stage/1011104"
+                "ID": 1011104
             },
             "stageRewardID": 6000,
             "dropAmount": 1,
@@ -75,8 +74,7 @@ Get Equipment by Tier or ID
         {
             "stageName": "[Hard] Main Chapter 01 - Stage 03",
             "stageInfo": {
-                "ID": 1012103,
-                "stageData": "https://api.ennead.cc/buruaka/stage/1012103"
+                "ID": 1012103
             },
             "stageRewardID": 6000,
             "dropAmount": 1,
@@ -85,8 +83,7 @@ Get Equipment by Tier or ID
         {
             "stageName": "[Normal] Main Chapter 02 - Stage 01",
             "stageInfo": {
-                "ID": 1021101,
-                "stageData": "https://api.ennead.cc/buruaka/stage/1021101"
+                "ID": 1021101
             },
             "stageRewardID": 6000,
             "dropAmount": 1,
@@ -95,8 +92,7 @@ Get Equipment by Tier or ID
         {
             "stageName": "[Normal] Main Chapter 02 - Stage 02",
             "stageInfo": {
-                "ID": 1021102,
-                "stageData": "https://api.ennead.cc/buruaka/stage/1021102"
+                "ID": 1021102
             },
             "stageRewardID": 6000,
             "dropAmount": 1,
@@ -105,8 +101,7 @@ Get Equipment by Tier or ID
         {
             "stageName": "[Normal] Main Chapter 02 - Stage 03",
             "stageInfo": {
-                "ID": 1021103,
-                "stageData": "https://api.ennead.cc/buruaka/stage/1021103"
+                "ID": 1021103
             },
             "stageRewardID": 6000,
             "dropAmount": 1,
@@ -115,8 +110,7 @@ Get Equipment by Tier or ID
         {
             "stageName": "[Hard] Main Chapter 02 - Stage 03",
             "stageInfo": {
-                "ID": 1022103,
-                "stageData": "https://api.ennead.cc/buruaka/stage/1022103"
+                "ID": 1022103
             },
             "stageRewardID": 6000,
             "dropAmount": 1,
@@ -128,6 +122,78 @@ Get Equipment by Tier or ID
 </details>
 
 ### Get Character
+Get all character list with their basic info
+
+> [https://api.ennead.cc/buruaka/character/](https://api.ennead.cc/buruaka/character)
+
+> Returns: `Character Object`
+<details>
+<summary>View Payload Example</summary>
+
+```json
+{
+    "status": 200,
+    "data": [
+        {
+            "ID": 10000,
+            "baseStar": 3,
+            "rarity": "SSR",
+            "name": "Aru",
+            "profile": "The self-proclaimed boss of Problem Solver 68.\n\nAru expanded the Gehenna Academy's Problem Solver 68 club without permission to conduct illegal business activities. She aspires to be seen as a dashing and debonair villain, but her frequent blunders always expose her as a poser.",
+            "armorType": "Light Armor",
+            "bulletType": "Explosion",
+            "position": "Back",
+            "role": "Attacker",
+            "squadType": "Striker",
+            "weaponType": "SR",
+            "terrain": {
+                "Urban": {
+                    "DamageDealt": "120%(1.2x)",
+                    "ShieldBlockRate": "60%"
+                },
+                "Desert": {
+                    "DamageDealt": "100%(1x)",
+                    "ShieldBlockRate": "30%"
+                },
+                "Indoor": {
+                    "DamageDealt": "80%(0.8x)",
+                    "ShieldBlockRate": "0%"
+                }
+            }
+        },
+        {
+            "ID": 10001,
+            "baseStar": 3,
+            "rarity": "SSR",
+            "name": "Eimi",
+            "profile": "An agent of the Super Phenomenon Task Force at the Millennium School.\n\nAn emotionally inscrutable oddball, Eimi very rarely speaks and can often be found staring off into space for no particular reason. However, there's no one as brutally efficient as her when it comes to carrying out missions for Seminar.",
+            "armorType": "Light Armor",
+            "bulletType": "Explosion",
+            "position": "Front",
+            "role": "Tanker",
+            "squadType": "Striker",
+            "weaponType": "SG",
+            "terrain": {
+                "Urban": {
+                    "DamageDealt": "120%(1.2x)",
+                    "ShieldBlockRate": "60%"
+                },
+                "Desert": {
+                    "DamageDealt": "100%(1x)",
+                    "ShieldBlockRate": "30%"
+                },
+                "Indoor": {
+                    "DamageDealt": "80%(0.8x)",
+                    "ShieldBlockRate": "0%"
+                }
+            }
+        }
+    ]
+}
+```
+</details>
+
+
 Get a single character
 
 > [https://api.ennead.cc/buruaka/character/](https://api.ennead.cc/buruaka/character)
