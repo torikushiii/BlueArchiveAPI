@@ -1,8 +1,17 @@
 module.exports = function (fastify, opts, done) {
 	const Router = fastify;
 	
-	Router.get("/", (req, res) => {
-		res.badRequest("No character ID/name is given!");
+	Router.get("/", async (req, res) => {
+		const data = await ba.BlueArchiveCharacter.getAll();
+		if (!data) {
+			res.badRequest("No data found (?)");
+			return;
+		}
+
+		res.send({
+			status: 200,
+			data
+		});
 	});
 
 	Router.get("/query", async (req, res) => {
