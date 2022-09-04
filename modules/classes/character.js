@@ -148,6 +148,22 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
 		}
 	}
 
+	static async getAll () {
+		const data = [];
+
+		const values = [...BlueArchiveCharacter.data.values()];
+		const characters = values.filter(i => i.isPlayable
+			&& i.character.name !== "???"
+			&& i.character.name !== "LocalizeError"
+		);
+		
+		for (const character of characters) {
+			data.push(this.parseCharacterData(character));
+		}
+
+		return data;
+	}
+
 	static async loadData () {
 		const data = await ba.Query.get("CharacterData");
 		for (const key of data) {
@@ -216,10 +232,19 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
 			DamageDealer: "Attacker",
 			Tanker: "Tanker",
 			Healer: "Healer",
-			Supporter: "Supporter"
+			Supporter: "Supporter",
+			Vehicle: "Tactical"
 		};
 
 		return types[roleType] ?? "???";
+	}
+
+	static parseCharacterData (data) {
+		return {
+			ID: data.ID,
+			...data.character,
+			terrain: data.terrain
+		};
 	}
 
 	/**
