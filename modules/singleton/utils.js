@@ -87,6 +87,7 @@ module.exports = class Utils extends require("./template") {
 	};
 
 	/**
+	 * @inheritdoc
      * @returns {Utils}
      */
 	static singleton () {
