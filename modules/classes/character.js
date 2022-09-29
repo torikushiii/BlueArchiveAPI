@@ -148,20 +148,39 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
 		}
 	}
 
-	static async getAll () {
+	static async getAll (type) {
 		const data = [];
 
-		const values = [...BlueArchiveCharacter.data.values()];
-		const characters = values.filter(i => i.isPlayable
-			&& i.character.name !== "???"
-			&& i.character.name !== "LocalizeError"
-		);
-		
-		for (const character of characters) {
-			data.push(this.parseCharacterData(character));
-		}
+		if (type === "true" || type === "false") {
+			const values = [...BlueArchiveCharacter.data.values()];
+			const characters = values.filter(i => i.isReleased === Boolean(type === "true")
+				&& i.isPlayable
+				&& i.character.name !== "???"
+				&& i.character.name !== "LocalizeError"
+			);
 
-		return data;
+			for (const character of characters) {
+				data.push(this.parseCharacterData(character));
+			}
+
+			return data;
+		}
+		else if (typeof type === "undefined") {
+			const values = [...BlueArchiveCharacter.data.values()];
+			const characters = values.filter(i => i.isPlayable
+				&& i.character.name !== "???"
+				&& i.character.name !== "LocalizeError"
+			);
+			
+			for (const character of characters) {
+				data.push(this.parseCharacterData(character));
+			}
+
+			return data;
+		}
+		else {
+			return null;
+		}
 	}
 
 	static async loadData () {
@@ -172,8 +191,8 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
 
 			const characterSet = new BlueArchiveCharacter({
 				ID: key.Id,
-				isReleased: (key.ProductionStep === "Release"),
-				isPlayable: key.IsPlayableCharacter,
+				isReleased: Boolean(key.ProductionStep === "Release"),
+				isPlayable: Boolean(key.IsPlayableCharacter),
 				character: {
 					baseStar: key.DefaultStarGrade,
 					rarity: key.Rarity,

@@ -2,7 +2,7 @@ module.exports = function (fastify, opts, done) {
 	const Router = fastify;
 	
 	Router.get("/", async (req, res) => {
-		const data = await ba.BlueArchiveCharacter.getAll();
+		const data = await ba.BlueArchiveCharacter.getAll(req.query.released);
 		if (!data) {
 			res.badRequest("No data found (?)");
 			return;
