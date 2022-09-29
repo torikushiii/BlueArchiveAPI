@@ -193,6 +193,9 @@ Get all character list with their basic info
 ```
 </details>
 
+Get characters by their release status
+
+> [https://api.ennead.cc/buruaka/character?released=true](https://api.ennead.cc/buruaka/character?released=true)
 
 Get a single character
 
