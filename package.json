@@ -14,7 +14,7 @@
   "engines": {
     "node": ">= 16.0"
   },
-  "homepage": "https://api.torikushi.xyz",
+  "homepage": "https://api.ennead.cc/buruaka",
   "author": "torikushiii",
   "license": "OSL-3.0",
   "dependencies": {
