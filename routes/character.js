@@ -4,7 +4,7 @@ module.exports = function (fastify, opts, done) {
 	Router.get("/", async (req, res) => {
 		const data = await ba.BlueArchiveCharacter.getAll(req.query.released);
 		if (!data) {
-			res.badRequest("No data found (?)");
+			res.notFound("No data found (?)");
 			return;
 		}
 
