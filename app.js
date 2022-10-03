@@ -8,7 +8,8 @@ const logger = require("./lib/logger");
 		"character",
 		"equipment",
 		"stage",
-		"raid"
+		"raid",
+		"banner"
 	];
 
 	const config = ba.Config;
