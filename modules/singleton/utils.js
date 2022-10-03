@@ -4,6 +4,8 @@ module.exports = class Utils extends require("./template") {
 	#characterLocalize;
 	#skillLocalize;
 	#skillList;
+	#bannerData;
+	#characters = new Map();
 
 	static terrainTypes = {
 		Urban: {
@@ -96,6 +98,48 @@ module.exports = class Utils extends require("./template") {
 		}
 
 		return Utils.module;
+	}
+
+	async getBannerData () {
+		if (!this.#bannerData) {
+			this.#bannerData = await ba.Query.get("GachaData");
+		}
+
+		if (this.#characters.size === 0) {
+			const charList = await ba.Query.get("CharacterData");
+			for (const char of charList) {
+				this.#characters.set(char.Id, char);
+			}
+		}
+
+		const past = [];
+		const current = [];
+
+		for (const key of this.#bannerData) {
+			const skipId = [90060000, 90060001, 90070000];
+
+			if (skipId.includes(key.Id)) {
+				continue;
+			}
+
+			const hasMoviePath = Boolean(key.MovieBannerPath !== null);
+			const hasRateUp = Boolean(key.InfoCharacterId.length !== 0);
+
+			if (hasMoviePath && hasRateUp) {
+				const delta = Date.parse(key.SalePeriodTo) - Date.now();
+				if (delta > 0) {
+					current.push(await this.parseBannerData(key));
+				}
+				else {
+					past.push(await this.parseBannerData(key));
+				}
+			}
+		}
+
+		return {
+			current,
+			past
+		};
 	}
 
 	async getSkillInfo (ID) {
@@ -334,6 +378,25 @@ module.exports = class Utils extends require("./template") {
 				};
 			}
 		}
+	}
+
+	async parseBannerData (data) {
+		const rateups = [];
+		for (const id of data.InfoCharacterId) {
+			const character = this.#characters.get(id);
+			if (character) {
+				const charName = await this.getCharacterName(character.LocalizeEtcId);
+				rateups.push(charName);
+			}
+		}
+
+		return {
+			id: data.Id,
+			gachaType: data.CategoryType,
+			startedAt: new Date(data.SalePeriodFrom).toUTCString(),
+			endedAt: new Date(data.SalePeriodTo).toUTCString(),
+			rateups
+		};
 	}
 
 	removeWhitespace (string) {
