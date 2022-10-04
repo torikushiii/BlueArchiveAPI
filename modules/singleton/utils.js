@@ -112,8 +112,9 @@ module.exports = class Utils extends require("./template") {
 			}
 		}
 
-		const past = [];
 		const current = [];
+		const finished = [];
+		const upcoming = [];
 
 		for (const key of this.#bannerData) {
 			const skipId = [90060000, 90060001, 90070000];
@@ -131,14 +132,15 @@ module.exports = class Utils extends require("./template") {
 					current.push(await this.parseBannerData(key));
 				}
 				else {
-					past.push(await this.parseBannerData(key));
+					finished.push(await this.parseBannerData(key));
 				}
 			}
 		}
 
 		return {
 			current,
-			past
+			upcoming,
+			finished
 		};
 	}
 
