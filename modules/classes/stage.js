@@ -112,8 +112,8 @@ module.exports = class BlueArchiveStage extends require("./template") {
 			stages.push({
 				seasonId: raid.SeasonId,
 				bossName: (raid.OpenRaidBossGroup)[0],
-				startAt: new Date(raid.SeasonStartData),
-				endAt: new Date(raid.SeasonEndData)
+				startAt: new Date(raid.SeasonStartData).toUTCString(),
+				endAt: new Date(raid.SeasonEndData).toUTCString()
 			});
 		}
 
