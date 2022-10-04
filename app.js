@@ -26,6 +26,8 @@ const logger = require("./lib/logger");
 	fastify.get("/buruaka/", async (req, res) => {
 		res.send({
 			status: 200,
+			version: config.version,
+			uptime: Math.round(Date.now() - process.uptime() * 1000),
 			endpoints: subroutes
 		});
 	});
