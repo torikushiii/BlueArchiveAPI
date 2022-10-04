@@ -80,10 +80,6 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
 			return BlueArchiveCharacter.data.get(identifier);
 		}
 		else if (typeof identifier === "string") {
-			if (identifier === "alice") {
-				identifier = "aris";
-			}
-
 			const characterName = BlueArchiveCharacter.normalizeName(identifier);
 			const values = [...BlueArchiveCharacter.data.values()];
 			const data = values.find(value => BlueArchiveCharacter.normalizeName(value.character.name) === characterName) ?? null;
@@ -163,7 +159,7 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
 				data.push(this.parseCharacterData(character));
 			}
 
-			return data;
+			return data.map(i => i.name);
 		}
 		else if (typeof type === "undefined") {
 			const values = [...BlueArchiveCharacter.data.values()];
