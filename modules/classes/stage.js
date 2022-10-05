@@ -105,16 +105,42 @@ module.exports = class BlueArchiveStage extends require("./template") {
 	}
 
 	static async getRaids () {
-		const stages = [];
+		const stages = {
+			current: [],
+			upcoming: [],
+			ended: []
+		};
 		
 		const raidData = await ba.Query.get("RaidData");
 		for (const raid of raidData) {
-			stages.push({
-				seasonId: raid.SeasonId,
-				bossName: (raid.OpenRaidBossGroup)[0],
-				startAt: new Date(raid.SeasonStartData).toUTCString(),
-				endAt: new Date(raid.SeasonEndData).toUTCString()
-			});
+			const startAt = new Date(raid.SeasonStartData);
+			const endAt = new Date(raid.SeasonEndData);
+			const now = new Date();
+
+			if (now > startAt && now < endAt) {
+				stages.current.push({
+					seasonId: raid.SeasonId,
+					bossName: (raid.OpenRaidBossGroup)[0] ?? "???",
+					startAt: startAt.toUTCString(),
+					endAt: endAt.toUTCString()
+				});
+			}
+			else if (now < startAt) {
+				stages.upcoming.push({
+					seasonId: raid.SeasonId,
+					bossName: (raid.OpenRaidBossGroup)[0] ?? "???",
+					startAt: startAt.toUTCString(),
+					endAt: endAt.toUTCString()
+				});
+			}
+			else if (now > endAt) {
+				stages.ended.push({
+					seasonId: raid.SeasonId,
+					bossName: (raid.OpenRaidBossGroup)[0] ?? "???",
+					startAt: startAt.toUTCString(),
+					endAt: endAt.toUTCString()
+				});
+			}
 		}
 
 		return stages;
