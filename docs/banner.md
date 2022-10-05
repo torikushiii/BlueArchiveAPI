@@ -34,7 +34,8 @@ Display all current and past banners
                 ]
             }
         ],
-        "past": [
+        "upcoming": [],
+        "ended": [
             {
                 "id": 90050003,
                 "gachaType": "PickupGacha",
