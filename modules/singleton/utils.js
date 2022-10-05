@@ -113,8 +113,8 @@ module.exports = class Utils extends require("./template") {
 		}
 
 		const current = [];
-		const finished = [];
 		const upcoming = [];
+		const ended = [];
 
 		for (const key of this.#bannerData) {
 			const skipId = [90060000, 90060001, 90070000];
@@ -127,12 +127,18 @@ module.exports = class Utils extends require("./template") {
 			const hasRateUp = Boolean(key.InfoCharacterId.length !== 0);
 
 			if (hasMoviePath && hasRateUp) {
-				const delta = Date.parse(key.SalePeriodTo) - Date.now();
-				if (delta > 0) {
-					current.push(await this.parseBannerData(key));
+				const now = new Date();
+				const startAt = new Date(key.SalePeriodFrom);
+				const endAt = new Date(key.SalePeriodTo);
+
+				if (now < startAt) {
+					upcoming.push(await this.parseBannerData(key));
+				}
+				else if (now > endAt) {
+					ended.push(await this.parseBannerData(key));
 				}
 				else {
-					finished.push(await this.parseBannerData(key));
+					current.push(await this.parseBannerData(key));
 				}
 			}
 		}
@@ -140,7 +146,7 @@ module.exports = class Utils extends require("./template") {
 		return {
 			current,
 			upcoming,
-			finished
+			ended
 		};
 	}
 

@@ -3,7 +3,7 @@ module.exports = function (fastify, opts, done) {
 
 	Router.get("/", async (req, res) => {
 		const data = await ba.Utils.getBannerData();
-		if (data.current.length === 0 && data.past.length === 0) {
+		if (data.current.length === 0 && data.ended.length === 0) {
 			return res.notFound("No banners found");
 		}
         
