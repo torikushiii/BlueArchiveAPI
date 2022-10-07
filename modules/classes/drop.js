@@ -1,69 +1,50 @@
-const logger = require("../../lib/logger");
+const chalk = require("chalk");
 
-module.exports = class BlueArchiveDrop extends require("./template") {
+module.exports = class Drops extends require("./template") {
 	static data = new Map();
+
 	constructor (data) {
 		super();
 
-		/**
-         * Name of the stage that the equipment drop.
-         * @type {string}
-         */
-		this.stageName = data.stageName;
+		this.id = data.id;
 
-		/**
-         * Uniqe identifier of the stage group ID.
-         * @type {object}
-         */
-		this.stageInfo = data.stageInfo ?? {};
+		this.tag = data.tag;
 
-		/**
-         * The equipment ID on that stage.
-         * @type {number}
-         */
-		this.stageRewardID = data.stageRewardID;
+		this.stageRewardId = data.stageRewardId;
 
-		/**
-         * Amount of total equipment drop on the stage
-         * @type {number}
-         */
 		this.dropAmount = data.dropAmount;
 
-		/**
-         * The equipment drop chance.
-         * @type {number}
-         */
 		this.dropChance = data.dropChance;
 	}
 
 	static get (identifier) {
-		if (identifier instanceof BlueArchiveDrop) {
+		if (identifier instanceof Drops) {
 			return identifier;
 		}
 		else if (typeof identifier === "number") {
-			const values = [...BlueArchiveDrop.data.values()];
-			const filtered = values.filter(value => value.stageRewardID === identifier);
-			return (filtered.length !== 0) ? filtered : [];
+			const values = [...Drops.data.values()];
+			const dropData = values.filter(i => i.stageRewardId === identifier);
+			return dropData;
 		}
 		else {
-			console.error("Invalid identifier type. Must be a number!", {
+			console.error(chalk `{red Invalid identifier for Drops.get(). Expected number!}`, {
 				identifier,
 				type: typeof identifier
 			});
 		}
 	}
 
-	static getDropByStageID (identifier) {
-		if (identifier instanceof BlueArchiveDrop) {
+	static getDropbyStage (identifier) {
+		if (identifier instanceof Drops) {
 			return identifier;
 		}
 		else if (typeof identifier === "number") {
-			const values = [...BlueArchiveDrop.data.values()];
-			const filtered = values.filter(value => value.stageInfo.ID === identifier);
-			return filtered;
+			const values = [...Drops.data.values()];
+			const dropData = values.filter(i => i.id === identifier);
+			return dropData;
 		}
 		else {
-			return console.error("Invalid identifier type. Must be a number!", {
+			console.error(chalk `{red Invalid identifier for Drops.getDropbyStage(). Expected number!}`, {
 				identifier,
 				type: typeof identifier
 			});
@@ -71,37 +52,18 @@ module.exports = class BlueArchiveDrop extends require("./template") {
 	}
 
 	static async loadData () {
-		const data = await ba.Query.get("DropDataMain");
-		for (let i = 0; i < data.length; i++) {
-			if (data[i].RewardTag === "Default") {
-				const getStageName = ba.BlueArchiveStage.getStageByID(data[i].GroupId);
-				if (getStageName) {
-					getStageName.chapter = getStageName.chapter.replace(/CHAPTER/g, "Chapter ");
-					getStageName.subChapter = getStageName.subChapter.replace(/Stage/g, "Stage ");
-				}
-
-				const stageName = (getStageName)
-					? `${ba.Utils.removeWhitespace(`[${getStageName.difficulty}] ${getStageName.type} ${getStageName.chapter} - ${getStageName.subChapter}`)}`
-					: "???";
-				
-				const dropObj = new BlueArchiveDrop({
-					stageName,
-					stageInfo: {
-						ID: data[i].GroupId
-					},
-					stageRewardID: data[i].StageRewardId,
-					dropAmount: data[i].StageRewardAmount,
-					dropChance: data[i].StageRewardProb / 100
-				});
-    
-				BlueArchiveDrop.data.set(i, dropObj);
-			}
+		const data = await ba.Query.collection("DropDataMain").find({}).toArray();
+		if (data.length === 0) {
+			throw new Error("No drop data found.");
 		}
 
-		logger.warn(`Loaded ${BlueArchiveDrop.data.size} drop data`);
+		for (const drop of data) {
+			const dropData = new Drops(drop);
+			Drops.data.set(Symbol(dropData.id), dropData);
+		}
 	}
 
 	static destroy () {
-		BlueArchiveDrop.data.clear();
+		Drops.data.clear();
 	}
 };

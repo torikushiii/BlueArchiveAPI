@@ -100,322 +100,99 @@ module.exports = class Utils extends require("./template") {
 		return Utils.module;
 	}
 
-	async getBannerData () {
-		if (!this.#bannerData) {
-			this.#bannerData = await ba.Query.get("GachaData");
+	async getEquipmentData (id) {
+		if (!this.#localizeEtc) {
+			this.#localizeEtc = await ba.Query.collection("LocalizeEtc").find({}).toArray();
 		}
 
-		if (this.#characters.size === 0) {
-			const charList = await ba.Query.get("CharacterData");
-			for (const char of charList) {
-				this.#characters.set(char.Id, char);
-			}
+		const equipmentData = ba.Equipment.get(id);
+		if (!equipmentData) {
+			return null;
 		}
 
-		const current = [];
-		const upcoming = [];
-		const ended = [];
+		const equipmentLoc = this.#localizeEtc.find(i => i.key === equipmentData.localizeId);
+		const equipment = {
+			id: equipmentData.id,
+			name: equipmentLoc.name,
+			description: equipmentLoc.description
+		};
 
-		for (const key of this.#bannerData) {
-			const skipId = [90060000, 90060001, 90070000];
+		return equipment;
+	}
 
-			if (skipId.includes(key.Id)) {
-				continue;
-			}
+	async getCharacterName (id) {
+		if (!this.#localizeEtc) {
+			this.#localizeEtc = await ba.Query.collection("LocalizeEtc").find({}).toArray();
+		}
 
-			const hasMoviePath = Boolean(key.MovieBannerPath !== null);
-			const hasRateUp = Boolean(key.InfoCharacterId.length !== 0);
+		return this.#localizeEtc.find(i => i.key === id);
+	}
 
-			if (hasMoviePath && hasRateUp) {
-				const now = new Date();
-				const startAt = new Date(key.SalePeriodFrom);
-				const endAt = new Date(key.SalePeriodTo);
+	async getCharacterData (id) {
+		if (!this.#characterLocalize) {
+			this.#characterLocalize = await ba.Query.collection("CharacterLocalize").find({}).toArray();
+		}
+		
+		if (!this.#statData) {
+			this.#statData = await ba.Query.collection("CharacterStat").find({}).toArray();
+		}
 
-				if (now < startAt) {
-					upcoming.push(await this.parseBannerData(key));
-				}
-				else if (now > endAt) {
-					ended.push(await this.parseBannerData(key));
-				}
-				else {
-					current.push(await this.parseBannerData(key));
-				}
-			}
+		const info = this.#characterLocalize.find(i => i.id === id);
+		const statData = this.#statData.find(i => i.id === id);
+		if (statData) {
+			delete statData._id; // not sorry for this xd
 		}
 
 		return {
-			current,
-			upcoming,
-			ended
+			info,
+			stat: statData,
+			topology: {
+				urban: Utils.terrainTypes.Urban[statData.streetMood],
+				outdoor: Utils.terrainTypes.Desert[statData.outdoorMood],
+				indoor: Utils.terrainTypes.Indoor[statData.indoorMood]
+			}
 		};
 	}
 
-	async getSkillInfo (ID) {
+	async getSkillInfo (id) {
 		if (!this.#skillLocalize) {
-			this.#skillLocalize = await ba.Query.get("SkillLocalize");
+			this.#skillLocalize = await ba.Query.collection("SkillLocalize").find({}).toArray();
 		}
-        
-		for (const keyData in this.#skillLocalize) {
-			if (this.#skillLocalize[keyData].Key === ID) {
-				return {
-					name: this.#skillLocalize[keyData]?.NameEn ?? null,
-					description: (this.#skillLocalize[keyData]?.DescriptionEn) ? this.#skillLocalize[keyData].DescriptionEn.replace(/\[([^\]]+)\]/g, "") : null
-				};
-			}
+
+		const skill = this.#skillLocalize.find(i => i.id === id);
+		if (!skill) {
+			return null;
 		}
+
+		return {
+			id: skill.id,
+			name: skill.name,
+			description: skill.description
+		};
 	}
 
 	async getSkillData (name) {
 		if (!this.#skillList) {
-			this.#skillList = await ba.Query.get("SkillListTable");
+			this.#skillList = await ba.Query.collection("SkillListTable").find({}).toArray();
 		}
-        
+
 		const stuff = [];
-		const skill = this.#skillList.filter(skill => skill.GroupId === name);
-		if (skill.length !== 0) {
-			for (const key of skill) {
-				stuff.push({
-					level: key.Level,
-					name: (await this.getSkillInfo(key.LocalizeSkillId))?.name,
-					description: (await this.getSkillInfo(key.LocalizeSkillId))?.description,
-					skillCost: key?.SkillCost,
-					bulletType: key?.BulletType
-				});
+		const skills = this.#skillList.filter(i => i.groupId === name);
+		if (skills.length !== 0) {
+			for (const skill of skills) {
+				const skillInfo = await this.getSkillInfo(skill.localizeSkillId);
+				if (skillInfo) {
+					stuff.push({
+						level: skill.level,
+						name: skillInfo.name,
+						description: skillInfo.description,
+						skillCost: skill.skillCost,
+						bulletType: skill.bulletType
+					});
+				}
 			}
 		}
 
 		return stuff;
-	}
-
-	async getEquipmentName (ID) {
-		if (!this.#localizeEtc) {
-			this.#localizeEtc = await ba.Query.get("LocalizeEtc");
-		}
-
-		for (const keyData in this.#localizeEtc) {
-			if (this.#localizeEtc[keyData].Key === ID) {
-				return this.#localizeEtc[keyData].NameEn;
-			}
-		}
-	}
-
-	async getEquipmentDescription (ID) {
-		if (!this.#localizeEtc) {
-			this.#localizeEtc = await ba.Query.get("LocalizeEtc");
-		}
-
-		for (const keyData in this.#localizeEtc) {
-			if (this.#localizeEtc[keyData].Key === ID) {
-				return this.#localizeEtc[keyData].DescriptionEn;
-			}
-		}
-	}
-
-	async getEquipmentTypes (item) {
-		const data = ba.BlueArchiveEquipment.getDataByTier(item);
-		if (data) {
-			return data.ID;
-		}
-		else {
-			return null;
-		}
-	}
-
-	async getCharacterName (ID) {
-		if (!this.#localizeEtc) {
-			this.#localizeEtc = await ba.Query.get("LocalizeEtc");
-		}
-
-		for (const keyData in this.#localizeEtc) {
-			if (this.#localizeEtc[keyData].Key === ID) {
-				return (this.#localizeEtc[keyData].NameEn) ? this.#localizeEtc[keyData].NameEn : "???";
-			}
-		}
-	}
-
-	async getCharacterTerrain (ID) {
-		if (!this.#statData) {
-			this.#statData = await ba.Query.get("CharacterStat");
-		}
-
-		for (const keyData in this.#statData) {
-			if (this.#statData[keyData].CharacterId === ID) {
-				return {
-					Urban: Utils.terrainTypes.Urban[this.#statData[keyData].StreetBattleAdaptation],
-					Desert: Utils.terrainTypes.Desert[this.#statData[keyData].OutdoorBattleAdaptation],
-					Indoor: Utils.terrainTypes.Indoor[this.#statData[keyData].IndoorBattleAdaptation]
-				};
-			}
-		}
-	}
-
-	async getCharacterStat (ID) {
-		if (!this.#statData) {
-			this.#statData = await ba.Query.get("CharacterStat");
-		}
-
-		for (const keyData in this.#statData) {
-			if (this.#statData[keyData].CharacterId === ID) {
-				return {
-					AttackLevel1: this.#statData[keyData].AttackPower1,
-					AttackLevel100: this.#statData[keyData].AttackPower100,
-					MaxHPLevel1: this.#statData[keyData].MaxHP1,
-					MaxHPLevel100: this.#statData[keyData].MaxHP100,
-					DefenseLevel1: this.#statData[keyData].DefensePower1,
-					DefenseLevel100: this.#statData[keyData].DefensePower100,
-					HealPowerLevel1: this.#statData[keyData].HealPower1,
-					HealPowerLevel100: this.#statData[keyData].HealPower100,
-					DefensePenetrationLevel1: this.#statData[keyData].DefensePenetration1,
-					DefensePenetrationLevel100: this.#statData[keyData].DefensePenetration100,
-					AmmoCount: this.#statData[keyData].AmmoCount,
-					AmmoCost: this.#statData[keyData].AmmoCost,
-					Range: this.#statData[keyData].Range,
-					MoveSpeed: this.#statData[keyData].MoveSpeed
-				};
-			}
-		}
-	}
-
-	async getCharacterInfo (ID) {
-		if (!this.#characterLocalize) {
-			this.#characterLocalize = await ba.Query.get("CharacterLocalize");
-		}
-
-		for (const keyData in this.#characterLocalize) {
-			if (this.#characterLocalize[keyData].CharacterId === ID) {
-				return {
-					ArtistName: {
-						KR: this.#characterLocalize[keyData].ArtistNameKr,
-						JP: this.#characterLocalize[keyData].ArtistNameJp,
-						TH: this.#characterLocalize[keyData].ArtistNameTh,
-						TW: this.#characterLocalize[keyData].ArtistNameTw,
-						EN: this.#characterLocalize[keyData].ArtistNameEn,
-						DE: this.#characterLocalize[keyData].ArtistNameDe,
-						FR: this.#characterLocalize[keyData].ArtistNameFr
-					},
-					VoiceActor: {
-						KR: this.#characterLocalize[keyData].CharacterVoiceKr,
-						JP: this.#characterLocalize[keyData].CharacterVoiceJp,
-						TH: this.#characterLocalize[keyData].CharacterVoiceTh,
-						TW: this.#characterLocalize[keyData].CharacterVoiceTw,
-						EN: this.#characterLocalize[keyData].CharacterVoiceEn,
-						DE: this.#characterLocalize[keyData].CharacterVoiceDe,
-						FR: this.#characterLocalize[keyData].CharacterVoiceFr
-					},
-					StatusMessage: {
-						KR: this.#characterLocalize[keyData].StatusMessageKr,
-						JP: this.#characterLocalize[keyData].StatusMessageJp,
-						TH: this.#characterLocalize[keyData].StatusMessageTh,
-						TW: this.#characterLocalize[keyData].StatusMessageTw,
-						EN: this.#characterLocalize[keyData].StatusMessageEn,
-						DE: this.#characterLocalize[keyData].StatusMessageDe,
-						FR: this.#characterLocalize[keyData].StatusMessageFr
-					},
-					FullName: {
-						KR: this.#characterLocalize[keyData].FullNameKr,
-						JP: this.#characterLocalize[keyData].FullNameJp,
-						TH: this.#characterLocalize[keyData].FullNameTh,
-						TW: this.#characterLocalize[keyData].FullNameTw,
-						EN: this.#characterLocalize[keyData].FullNameEn,
-						DE: this.#characterLocalize[keyData].FullNameDe,
-						FR: this.#characterLocalize[keyData].FullNameFr
-					},
-					SchoolYear: {
-						KR: this.#characterLocalize[keyData].SchoolYearKr,
-						JP: this.#characterLocalize[keyData].SchoolYearJp,
-						TH: this.#characterLocalize[keyData].SchoolYearTh,
-						TW: this.#characterLocalize[keyData].SchoolYearTw,
-						EN: this.#characterLocalize[keyData].SchoolYearEn,
-						DE: this.#characterLocalize[keyData].SchoolYearDe,
-						FR: this.#characterLocalize[keyData].SchoolYearFr
-					},
-					CharacterAge: {
-						KR: this.#characterLocalize[keyData].CharacterAgeKr,
-						JP: this.#characterLocalize[keyData].CharacterAgeJp,
-						TH: this.#characterLocalize[keyData].CharacterAgeTh,
-						TW: this.#characterLocalize[keyData].CharacterAgeTw,
-						EN: this.#characterLocalize[keyData].CharacterAgeEn,
-						DE: this.#characterLocalize[keyData].CharacterAgeDe,
-						FR: this.#characterLocalize[keyData].CharacterAgeFr
-					},
-					BirthDate: {
-						KR: this.#characterLocalize[keyData].BirthdayKr,
-						JP: this.#characterLocalize[keyData].BirthdayJp,
-						TH: this.#characterLocalize[keyData].BirthdayTh,
-						TW: this.#characterLocalize[keyData].BirthdayTw,
-						EN: this.#characterLocalize[keyData].BirthdayEn,
-						DE: this.#characterLocalize[keyData].BirthdayDe,
-						FR: this.#characterLocalize[keyData].BirthdayFr
-					},
-					CharHeight: {
-						KR: this.#characterLocalize[keyData].CharHeightKr,
-						JP: this.#characterLocalize[keyData].CharHeightJp,
-						TH: this.#characterLocalize[keyData].CharHeightTh,
-						TW: this.#characterLocalize[keyData].CharHeightTw,
-						EN: this.#characterLocalize[keyData].CharHeightEn,
-						DE: this.#characterLocalize[keyData].CharHeightDe,
-						FR: this.#characterLocalize[keyData].CharHeightFr
-					},
-					Hobby: {
-						KR: this.#characterLocalize[keyData].HobbyKr,
-						JP: this.#characterLocalize[keyData].HobbyJp,
-						TH: this.#characterLocalize[keyData].HobbyTh,
-						TW: this.#characterLocalize[keyData].HobbyTw,
-						EN: this.#characterLocalize[keyData].HobbyEn,
-						DE: this.#characterLocalize[keyData].HobbyDe,
-						FR: this.#characterLocalize[keyData].HobbyFr
-					},
-					ProfileIntroduction: {
-						KR: this.#characterLocalize[keyData].ProfileIntroductionKr,
-						JP: this.#characterLocalize[keyData].ProfileIntroductionJp,
-						TH: this.#characterLocalize[keyData].ProfileIntroductionTh,
-						TW: this.#characterLocalize[keyData].ProfileIntroductionTw,
-						EN: this.#characterLocalize[keyData].ProfileIntroductionEn,
-						DE: this.#characterLocalize[keyData].ProfileIntroductionDe,
-						FR: this.#characterLocalize[keyData].ProfileIntroductionFr
-					},
-					CharacterSSRNewLine: {
-						KR: this.#characterLocalize[keyData].CharacterSSRNewKr,
-						JP: this.#characterLocalize[keyData].CharacterSSRNewJp,
-						TH: this.#characterLocalize[keyData].CharacterSSRNewTh,
-						TW: this.#characterLocalize[keyData].CharacterSSRNewTw,
-						EN: this.#characterLocalize[keyData].CharacterSSRNewEn,
-						DE: this.#characterLocalize[keyData].CharacterSSRNewDe,
-						FR: this.#characterLocalize[keyData].CharacterSSRNewFr
-					}
-				};
-			}
-		}
-	}
-
-	async parseBannerData (data) {
-		const rateups = [];
-		for (const id of data.InfoCharacterId) {
-			const character = this.#characters.get(id);
-			if (character) {
-				const charName = await this.getCharacterName(character.LocalizeEtcId);
-				rateups.push(charName);
-			}
-		}
-
-		return {
-			id: data.Id,
-			gachaType: data.CategoryType,
-			startedAt: new Date(data.SalePeriodFrom).toUTCString(),
-			endedAt: new Date(data.SalePeriodTo).toUTCString(),
-			rateups
-		};
-	}
-
-	removeWhitespace (string) {
-		if (typeof string !== "string") {
-			return "Provided input must be a string";
-		}
-    
-		return string.replace(/\s+/g, " ").trim();
-	}
-
-	capitalize (string) {
-		return string[0]?.toUpperCase() + string?.substring(1).toLowerCase();
 	}
 };

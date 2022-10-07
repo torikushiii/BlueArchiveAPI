@@ -1,88 +1,51 @@
-const logger = require("../../lib/logger");
+const chalk = require("chalk");
 
-module.exports = class BlueArchiveEquipment extends require("./template") {
+module.exports = class Equipment extends require("./template") {
 	static data = new Map();
+
 	constructor (data) {
 		super();
-        
-		/**
-         * Unique ID of the equipment.
-         * @type {number}
-         */
-		this.ID = data.ID;
 
-		/**
-         * Name of the target equipment.
-         * @type {string}
-         */
-		this.name = data.name;
+		this.id = data.id;
 
-		/**
-         * Description of the target equipment.
-         * @type {string}
-         */
-		this.description = data.description;
+		this.localizeId = data.localizeId;
 
-		/**
-         * The type category of the equipment.
-         * @type {string}
-         */
+		this.recipeId = data.recipeId;
+
 		this.category = data.category;
 
-		/**
-         * The rarity of the equipment.
-         * @type {string}
-         */
 		this.rarity = data.rarity;
 
-		/**
-         * The maximum level of the current tier equipment.
-         * @type {number}
-         */
 		this.maxLevel = data.maxLevel;
 
-		/**
-         * The recipe ID of the equipment.
-         * @type {number}
-         */
-		this.recipeID = data.recipeID;
-
-		/**
-         * The tier of the equipment ranging from 1 to 4.
-         * @type {number}
-         */
 		this.tier = data.tier;
 
-		/**
-         * The tags of the equipment.
-         * @type {string[]}
-         */
-		this.tags = (data.tags.length !== 0) ? data.tags : null;
+		this.tags = data.tags;
 	}
 
 	static get (identifier) {
-		if (identifier instanceof BlueArchiveEquipment) {
+		if (identifier instanceof Equipment) {
 			return identifier;
 		}
 		else if (typeof identifier === "number") {
-			const values = [...BlueArchiveEquipment.data.values()];
-			return values.find(value => value.ID === identifier) ?? null;
-		}
-		else if (typeof identifier === "string") {
-			const equipName = BlueArchiveEquipment.normalizeName(identifier);
-			const values = [...BlueArchiveEquipment.data.values()];
-			return values.find(value => BlueArchiveEquipment.normalizeName(value.name) === equipName) ?? null;
+			const values = [...Equipment.data.values()];
+			const equipmentData = values.filter(i => i.id === identifier);
+			if (equipmentData.length === 0) {
+				return null;
+			}
+			
+			return equipmentData[0];
 		}
 		else {
-			console.error("Invalid identifier type. Must be a number or a string!", {
+			console.error(chalk `{red Invalid identifier for Equipment.get(). Expected number!}`, {
 				identifier,
 				type: typeof identifier
 			});
 		}
 	}
 
-	static getDataByTier (identifier) {
-		if (identifier instanceof BlueArchiveEquipment) {
+	static getDatabyTier (identifier) {
+		if (identifier instanceof Equipment) {
 			return identifier;
 		}
 		else if (typeof identifier === "string") {
@@ -99,25 +62,27 @@ module.exports = class BlueArchiveEquipment extends require("./template") {
 			};
 
 			const [tier, name] = identifier.split(" ");
-			const values = [...BlueArchiveEquipment.data.values()];
+			const values = [...Equipment.data.values()];
 			if (tierTypes[tier] === 1) {
-				return values.find(value => value.tier === tierTypes[tier] && BlueArchiveEquipment.normalizeName(value.category) === BlueArchiveEquipment.normalizeName(name)) ?? null;
-			}
-			else if (tierTypes[tier] > 1) {
-				const tierData = values.find(value => value.tier === tierTypes[tier] && BlueArchiveEquipment.normalizeName(value.category) === BlueArchiveEquipment.normalizeName(name));
-				if (!tierData) {
-					return null;
-				}
-                
-				const recipeID = Number(`10${tierData.ID}`);
-				return values.find(value => value.ID === recipeID);
+				return this.parseEquipmentData(values.find(i => i.tier === tierTypes[tier]
+					&& Equipment.normalizeName(i.category) === Equipment.normalizeName(name))
+				);
 			}
 			else {
-				return null;
+				const tierData = values.find(i => i.tier === tierTypes[tier]
+					&& Equipment.normalizeName(i.category) === Equipment.normalizeName(name)
+				);
+
+				if (tierData.length === 0) {
+					return null;
+				}
+
+				const recipeId = Number(`10${tierData.id}`);
+				return values.find(i => i.id === recipeId);
 			}
 		}
 		else {
-			console.error("Invalid identifier type. Must be a number or a string!", {
+			console.error(chalk `{red Invalid identifier for Equipment.get(). Expected string!}`, {
 				identifier,
 				type: typeof identifier
 			});
@@ -125,37 +90,37 @@ module.exports = class BlueArchiveEquipment extends require("./template") {
 	}
 
 	static async loadData () {
-		const data = await ba.Query.get("EquipmentData");
-		for (const item of data) {
-			const itemSet = new BlueArchiveEquipment({
-				ID: item.Id,
-				name: ba.Utils.removeWhitespace(await ba.Utils.getEquipmentName(item.LocalizeEtcId)),
-				description: ba.Utils.removeWhitespace(await ba.Utils.getEquipmentDescription(item.LocalizeEtcId)),
-				category: item.EquipmentCategory,
-				rarity: item.Rarity,
-				maxLevel: item.MaxLevel,
-				recipeID: item.RecipeId,
-				tier: item.TierInit,
-				tags: item.Tags
-			});
-
-			BlueArchiveEquipment.data.set(item.Id, itemSet);
+		const data = await ba.Query.collection("EquipmentData").find({}).toArray();
+		if (data.length === 0) {
+			throw new Error("No equipment data found.");
 		}
 
-		logger.warn(`Loaded ${BlueArchiveEquipment.data.size} equipment items`);
+		for (const equipment of data) {
+			const equipmentData = new Equipment(equipment);
+			Equipment.data.set(Symbol(equipmentData.id), equipmentData);
+		}
+	}
+
+	static async parseEquipmentData (data) {
+		const equipData = await ba.Utils.getEquipmentData(data.id);
+		return {
+			id: data.id,
+			name: equipData.name,
+			description: equipData.description,
+			category: data.category,
+			rarity: data.rarity,
+			maxLevel: data.maxLevel,
+			recipeId: data.recipeId,
+			tier: data.tier,
+			tags: data.tags
+		};
 	}
 
 	static destroy () {
-		BlueArchiveEquipment.data.clear();
+		Equipment.data.clear();
 	}
 
-	/**
-	 * Normalizes non-standard strings into standardized equipment name.
-	 * Turns input string into lowercase.
-	 * @param {string} equipment
-	 * @returns {string}
-	 */
-	static normalizeName (equipment) {
-		return equipment.toLowerCase();
+	static normalizeName (name) {
+		return name.toLowerCase();
 	}
 };

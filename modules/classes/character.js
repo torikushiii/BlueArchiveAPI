@@ -1,108 +1,73 @@
-const logger = require("../../lib/logger");
+const chalk = require("chalk");
 
-module.exports = class BlueArchiveCharacter extends require("./template") {
+module.exports = class Character extends require("./template") {
 	static data = new Map();
+
 	constructor (data) {
 		super();
 
-		/**
-         * Unique ID of the character.
-         * @type {number}
-         */
-		this.ID = data.ID;
+		this.id = data.id;
 
-		/**
-         * Whether the character is released or not.
-         * @type {boolean}
-         */
-		this.isReleased = data.isReleased;
+		this.localizeEtcId = data.localizeEtcId;
 
-		/**
-         * Whether the character is playable or not.
-         * @type {boolean}
-         */
-		this.isPlayable = data.isPlayable;
+		this.name = data.name;
 
-		/**
-         * Contains character data.
-         * @type {Object}
-         */
-		this.character = data.character ?? {};
+		this.released = data.released;
 
-		/**
-         * Contains character info data.
-         * @type {Object}
-         */
-		this.info = data.info ?? {};
+		this.playable = data.playable;
 
-		/**
-         * Contains character stat data.
-         * @type {Object}
-         */
-		this.stat = data.stat ?? {};
+		this.baseStar = data.baseStar;
 
-		/**
-         * Contains character favourable terrain data.
-         * @type {Object}
-         */
-		this.terrain = data.terrain ?? {};
+		this.rarity = data.rarity;
 
-		/**
-         * Contains character equipment type.
-         * @type {array}
-         */
-		this.equipmentType = data.equipmentType ?? [];
+		this.armorType = this.fixArmorType(data.armorType);
 
-		/**
-         * Contains character skill data.
-         * @type {Object}
-         */
-		this.skill = data.skill ?? {};
+		this.bulletType = data.bulletType;
 
-		/**
-         * Contains character tags.
-         * @type {array}
-         */
-		this.tags = data.tags ?? [];
+		this.position = data.position;
 
-		/**
-         * Contains character extra info.
-         * @type {Object}
-         */
-		this.other = data.other ?? {};
+		this.role = this.fixRoleType(data.role);
+
+		this.squadType = data.squadType;
+
+		this.weaponType = data.weaponType;
+
+		this.club = data.club;
+
+		this.school = data.school;
+
+		this.equipmentType = data.equipmentType;
+
+		this.tags = data.tags;
 	}
 
 	static get (identifier) {
-		if (identifier instanceof BlueArchiveCharacter) {
+		if (identifier instanceof Character) {
 			return identifier;
 		}
 		else if (typeof identifier === "number") {
-			return BlueArchiveCharacter.data.get(identifier);
+			return Character.data.get(identifier);
 		}
 		else if (typeof identifier === "string") {
-			const characterName = BlueArchiveCharacter.normalizeName(identifier);
-			const values = [...BlueArchiveCharacter.data.values()];
-			const data = values.find(value => BlueArchiveCharacter.normalizeName(value.character.name) === characterName) ?? null;
-			if (data) {
-				ba.Cache.set({
-					key: data.character.name,
-					value: JSON.stringify({ data }),
-					expireAt: 1_800_000
-				});
-
-				return data;
+			const normalized = Character.normalizeName(identifier);
+			for (const character of Character.data.values()) {
+				if (Character.normalizeName(character.name) === normalized) {
+					return character;
+				}
 			}
+
+			return null;
 		}
 		else {
-			console.error("Invalid character identifier", {
+			console.error(chalk `{red Invalid identifier for Character.get(). Expected number!}`, {
 				identifier,
 				type: typeof identifier
 			});
 		}
 	}
 
-	static getCharacterByQuery (identifier) {
-		if (identifier instanceof BlueArchiveCharacter) {
+	static getCharacterbyQuery (identifier) {
+		if (identifier instanceof Character) {
 			return identifier;
 		}
 		else if (typeof identifier === "object") {
@@ -117,27 +82,27 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
 				return null;
 			}
 
-			const values = [...BlueArchiveCharacter.data.values()];
-			const data = values.filter(value => ((type) ? ba.BlueArchiveCharacter.normalizeName(value.character.squadType) === ba.BlueArchiveCharacter.normalizeName(type) : true)
-                && ((armor) ? ba.BlueArchiveCharacter.normalizeName(value.character.armorType) === ba.BlueArchiveCharacter.normalizeName(armor) : true)
-                && ((damage) ? ba.BlueArchiveCharacter.normalizeName(value.character.bulletType) === ba.BlueArchiveCharacter.normalizeName(damage) : true)
-                && ((school) ? ba.BlueArchiveCharacter.normalizeName(value.info.school) === ba.BlueArchiveCharacter.normalizeName(school) : true)
-                && ((role) ? ba.BlueArchiveCharacter.normalizeName(value.character.role) === ba.BlueArchiveCharacter.normalizeName(role) : true)
-                && ((position) ? ba.BlueArchiveCharacter.normalizeName(value.character.position) === ba.BlueArchiveCharacter.normalizeName(position) : true)
-                && ((weapon) ? ba.BlueArchiveCharacter.normalizeName(value.character.weaponType) === ba.BlueArchiveCharacter.normalizeName(weapon) : true)
-                && value.isPlayable
-                && value.character.name !== "???"
-                && value.character.name !== "LocalizeError"
+			const values = [...Character.data.values()];
+			const data = values.filter(value => ((type) ? Character.normalizeName(value.squadType) === Character.normalizeName(type) : true)
+                && ((armor) ? Character.normalizeName(value.armorType) === Character.normalizeName(armor) : true)
+                && ((damage) ? Character.normalizeName(value.bulletType) === Character.normalizeName(damage) : true)
+                && ((school) ? Character.normalizeName(value.school) === Character.normalizeName(school) : true)
+                && ((role) ? Character.normalizeName(value.role) === Character.normalizeName(role) : true)
+                && ((position) ? Character.normalizeName(value.position) === Character.normalizeName(position) : true)
+                && ((weapon) ? Character.normalizeName(value.weaponType) === Character.normalizeName(weapon) : true)
+                && value.playable
+                && value.name !== "???"
+                && value.name !== "LocalizeError"
 			);
 
 			if (data.length === 0) {
 				return null;
 			}
 
-			return data.map(value => value.character.name).sort();
+			return data.map(i => i.name).sort();
 		}
 		else {
-			console.error("Invalid character identifier", {
+			console.error(chalk `{red Invalid identifier for Character.get(). Expected object!}`, {
 				identifier,
 				type: typeof identifier
 			});
@@ -148,91 +113,58 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
 		const data = [];
 
 		if (type === "true" || type === "false") {
-			const values = [...BlueArchiveCharacter.data.values()];
-			const characters = values.filter(i => i.isReleased === Boolean(type === "true")
-				&& i.isPlayable
-				&& i.character.name !== "???"
-				&& i.character.name !== "LocalizeError"
+			const values = [...Character.data.values()];
+			const character = values.filter(i => i.isReleased === Boolean(type === true)
+				&& i.playable
+				&& i.name !== "???"
+				&& i.name !== "LocalizeError"
 			);
 
-			for (const character of characters) {
-				data.push(this.parseCharacterData(character));
+			for (const char of character) {
+				const charData = await this.parseCharacterData(char, { allChars: true });
+				data.push(charData);
 			}
 
-			return data.map(i => i.name);
+			return data.map(i => i.character.name);
 		}
 		else if (typeof type === "undefined") {
-			const values = [...BlueArchiveCharacter.data.values()];
-			const characters = values.filter(i => i.isPlayable
-				&& i.character.name !== "???"
-				&& i.character.name !== "LocalizeError"
+			const values = [...Character.data.values()];
+			const character = values.filter(i => i.playable
+				&& i.name !== "???"
+				&& i.name !== "LocalizeError"
 			);
-			
-			for (const character of characters) {
-				data.push(this.parseCharacterData(character));
+
+			for (const char of character) {
+				const charData = await this.parseCharacterData(char, { allChars: true });
+				data.push(charData);
 			}
 
 			return data;
 		}
-		else {
-			return null;
-		}
 	}
 
 	static async loadData () {
-		const data = await ba.Query.get("CharacterData");
-		for (const key of data) {
-			const other = await ba.Utils.getCharacterInfo(key.Id);
-			const getSkill = ba.BlueArchiveSkill.get(key.Id);
-
-			const characterSet = new BlueArchiveCharacter({
-				ID: key.Id,
-				isReleased: Boolean(key.ProductionStep === "Release"),
-				isPlayable: Boolean(key.IsPlayableCharacter),
-				character: {
-					baseStar: key.DefaultStarGrade,
-					rarity: key.Rarity,
-					name: await ba.Utils.getCharacterName(key.LocalizeEtcId),
-					profile: other?.ProfileIntroduction?.EN ?? "",
-					armorType: this.fixArmorType(key.ArmorType),
-					bulletType: (key.BulletType === "Pierce") ? "Penetration" : key.BulletType,
-					position: key.TacticRange,
-					role: this.fixRoleType(key.TacticRole),
-					squadType: (key.SquadType === "Main") ? "Striker" : "Special",
-					weaponType: key.WeaponType
-				},
-				info: {
-					club: key?.Club,
-					school: key?.School,
-					age: other?.CharacterAge?.EN,
-					birthDate: other?.BirthDate?.EN,
-					artist: other?.ArtistName?.EN ?? other?.ArtistName?.JP,
-					voiceActor: other?.VoiceActor?.EN ?? other?.VoiceActor?.JP
-				},
-				stat: await ba.Utils.getCharacterStat(key.Id),
-				terrain: await ba.Utils.getCharacterTerrain(key.Id),
-				equipmentType: key.EquipmentSlot,
-				skill: {
-					EX: getSkill?.ex,
-					normal: getSkill?.public,
-					passive: getSkill?.passive,
-					sub: getSkill?.extraPassive
-				},
-				tags: key.Tags,
-				other
-			});
-
-			BlueArchiveCharacter.data.set(key.Id, characterSet);
+		const data = await ba.Query.collection("CharacterData").find({}).toArray();
+		if (data.length === 0) {
+			throw new Error("No character data found.");
 		}
 
-		logger.info(`Loaded ${BlueArchiveCharacter.data.size} character data`);
+		for (const character of data) {
+			const charData = await ba.Utils.getCharacterName(character.localizeEtcId);
+			if (!charData) {
+				continue;
+			}
+			
+			const characterData = new Character({ ...character, name: charData.name });
+			Character.data.set(characterData.id, characterData);
+		}
 	}
 
 	static destroy () {
-		BlueArchiveCharacter.data.clear();
+		Character.data.clear();
 	}
 
-	static fixArmorType (armorType) {
+	fixArmorType (armorType) {
 		const types = {
 			Unarmed: "Special Armor",
 			HeavyArmor: "Heavy Armor",
@@ -242,7 +174,7 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
 		return types[armorType] ?? "???";
 	}
 
-	static fixRoleType (roleType) {
+	fixRoleType (roleType) {
 		const types = {
 			DamageDealer: "Attacker",
 			Tanker: "Tanker",
@@ -254,26 +186,105 @@ module.exports = class BlueArchiveCharacter extends require("./template") {
 		return types[roleType] ?? "???";
 	}
 
-	static parseCharacterData (data) {
+	static async parseCharacterData (data, options = {}) {
+		const skills = {
+			ex: [],
+			normal: [],
+			passive: [],
+			sub: []
+		};
+
+		if (options.allChars) {
+			const charData = await ba.Utils.getCharacterData(data.id);
+			return {
+				id: data.id,
+				baseStar: data.baseStar,
+				rarity: data.rarity,
+				name: data.name,
+				profile: charData.info.introduction,
+				armorType: data.armorType,
+				bulletType: data.bulletType,
+				position: data.position,
+				role: data.role,
+				squadType: data.squadType,
+				weaponType: data.weaponType,
+				terrain: charData.topology
+			};
+		}
+
+		const skillData = ba.Skill.get(data.id);
+		if (skillData) {
+			for (const [type, name] of Object.entries(skillData)) {
+				if (type === "id") {
+					continue;
+				}
+
+				switch (type) {
+					case "skillEx": {
+						const exInfo = await ba.Utils.getSkillData(name);
+						skills.ex.push(...exInfo);
+						break;
+					}
+
+					case "normal": {
+						const normalInfo = await ba.Utils.getSkillData(name);
+						skills.normal.push(...normalInfo);
+						break;
+					}
+
+					case "passive": {
+						const passiveInfo = await ba.Utils.getSkillData(name);
+						skills.passive.push(...passiveInfo);
+						break;
+					}
+
+					case "sub": {
+						const subInfo = await ba.Utils.getSkillData(name);
+						skills.sub.push(...subInfo);
+						break;
+					}
+
+					default:
+						return null;
+				}
+			}
+		}
+
+		const charData = await ba.Utils.getCharacterData(data.id);
 		return {
-			ID: data.ID,
-			...data.character,
-			terrain: data.terrain
+			id: data.id,
+			isReleased: data.released,
+			isPlayable: data.playable,
+			character: {
+				armorType: data.armorType,
+				baseStar: data.baseStar,
+				bulletType: data.bulletType,
+				name: data.name,
+				position: data.position,
+				profile: charData.info.introduction,
+				rarity: data.rarity,
+				role: data.role,
+				squadType: data.squadType,
+				weaponType: data.weaponType
+			},
+			info: {
+				age: charData.info.age,
+				artis: charData.info.artistName,
+				birthDate: charData.info.birthDate,
+				club: data.club,
+				school: data.school,
+				schoolYear: charData.info.schoolYear,
+				voiceActor: charData.info.voiceActor
+			},
+			stat: charData.stat,
+			terrain: charData.topology,
+			skills
 		};
 	}
 
-	/**
-	 * Normalizes non-standard strings into standardized character name.
-	 * Turns input string into lowercase.
-	 * @param {string} character
-	 * @returns {string}
-	 */
-	static normalizeName (character) {
-		// Quick check wether string contains Japanese characters.
-		if (/[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/.test(character)) {
-			return character;
-		}
-
-		return character?.toLowerCase();
+	static normalizeName (name) {
+		return name
+			.toLowerCase()
+			.replace(/\s+/g, "_");
 	}
 };

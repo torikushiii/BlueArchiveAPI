@@ -2,16 +2,12 @@ module.exports = function (fastify, opts, done) {
 	const Router = fastify;
 	
 	Router.get("/", async (req, res) => {
-		const data = await ba.BlueArchiveCharacter.getAll(req.query.released);
+		const data = await ba.Character.getAll(req.query.released);
 		if (!data) {
-			res.notFound("No data found (?)");
-			return;
+			return res.notFound("No data found (?)");
 		}
 
-		res.send({
-			status: 200,
-			data
-		});
+		return res.send({ data });
 	});
 
 	Router.get("/query", async (req, res) => {
@@ -21,9 +17,9 @@ module.exports = function (fastify, opts, done) {
 			return;
 		}
         
-		const data = await ba.BlueArchiveCharacter.getCharacterByQuery(req.query);
+		const data = await ba.Character.getCharacterbyQuery(req.query);
 		if (data) {
-			res.send({ data });
+			res.send(data);
 		}
 		else {
 			res.notFound("No character found with that matching query!");
@@ -34,46 +30,17 @@ module.exports = function (fastify, opts, done) {
 		if (req.query.id) {
 			const isId = Boolean(req.query.id === "true");
 			if (isId) {
-				const cache = await ba.Cache.get(req.params.id);
-				if (cache) {
-					res.send({
-						status: 200,
-						data: cache
-					});
-
-					return;
-				}
-
-				const data = ba.BlueArchiveCharacter.get(Number(req.params.id));
+				const data = ba.Character.get(Number(req.params.id));
 				if (data) {
-					res.send({
-						status: 200,
-						data
-					});
-
-					return;
+					return res.send(data);
 				}
 			}
 		}
 		else {
-			const cache = await ba.Cache.get(req.params.id);
-			if (cache) {
-				res.send({
-					status: 200,
-					data: cache
-				});
-
-				return;
-			}
-
-			const data = ba.BlueArchiveCharacter.get(req.params.id);
+			const data = ba.Character.get(req.params.id);
 			if (data) {
-				res.send({
-					status: 200,
-					data
-				});
-
-				return;
+				const parsedCharacter = await ba.Character.parseCharacterData(data);
+				return res.send(parsedCharacter);
 			}
 		}
 

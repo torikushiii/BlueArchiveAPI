@@ -1,115 +1,71 @@
-const MongoClient = require("mongodb").MongoClient;
+const { MongoClient } = require("mongodb");
 const url = `mongodb://${process.env.MONGO_IP}:${process.env.MONGO_PORT}`;
-const client = new MongoClient(url, {
-	useNewUrlParser: true,
-	useUnifiedTopology: true,
-	keepAlive: true,
-	keepAliveInitialDelay: 60000,
-	socketTimeoutMS: 360000,
-	connectTimeoutMS: 360000
-});
 
-module.exports = class Query extends require("./template") {
+module.exports = class QuerySingleton extends require("./template") {
+	/** @type {MongoClient} */
+	#pool = null;
+
 	/**
      * @inheritdoc
-     * @returns {Query}
+     * @returns {QuerySingleton}
      */
 	static singleton () {
-		if (!Query.module) {
-			Query.module = new Query();
+		if (!QuerySingleton.module) {
+			QuerySingleton.module = new QuerySingleton();
 		}
 
-		return Query.module;
+		return QuerySingleton.module;
 	}
 
 	constructor () {
 		super();
 
 		if (!process.env.MONGO_IP || !process.env.MONGO_PORT) {
-			return console.error("MongoDB IP or Port is not defined");
+			throw new Error("Missing MongoDB credentials");
 		}
-		else if (!process.env.DB_NAME) {
-			return console.error("Database name is not defined");
+		else {
+			this.#pool = new MongoClient(url, {
+				useUnifiedTopology: true,
+				useNewUrlParser: true,
+				keepAlive: true
+			});
 		}
 
 		this.connect();
 	}
 
 	async connect () {
-		await client.connect()
+		await this.#pool.connect()
+			.then(() => console.log("Connected to MongoDB"))
 			.catch(e => console.error(e));
+
+		this.initListeners();
 	}
 
-	async disconnect () {
-		await client.close()
-			.then(() => console.log("Disconnected from MongoDB"))
-			.catch(e => console.error(e));
+	initListeners () {
+		const pool = this.#pool;
+
+		pool.on("serverHeartbeatFailed", () => {
+			console.log("Server heartbeat failed");
+		});
+
+		pool.on("topologyOpening", () => {
+			console.log("Topology opening");
+		});
+
+		pool.on("topologyClosed", () => {
+			console.log("Topology closed");
+		});
 	}
 
-	/**
-     * Get a collection from MongoDB
-     * @param {string} collection The collection name
-     * @param {object} query The query to find the collection
-     * @returns {Promise<Array>}
-     */
-	async get (collection, query = {}) {
-		if (!collection) {
-			return "No collection is defined";
-		}
+	destroy () {
+		this.#pool.close();
+		this.#pool.removeAllListeners();
 
-		return await client.db(process.env.DB_NAME).collection(collection).find(query)
-			.toArray();
+		this.#pool = null;
 	}
 
-	/**
-     * Insert a new document into a collection
-     * @param {string} collection The collection name
-     * @param {object} data The data to insert
-     */
-	async set (collection, data) {
-		if (!collection) {
-			return "No collection is defined";
-		}
-
-		await client.db(process.env.DB_NAME).collection(collection).insertOne(data);
-	}
-
-	/**
-     * Insert batch of documents into a collection
-     * @param {string} collection The collection name
-     * @param {Array} data The data to insert
-     */
-	async setBatch (collection, data) {
-		if (!collection) {
-			return "No collection is defined";
-		}
-
-		await client.db(process.env.DB_NAME).collection(collection).insertMany(data);
-	}
-    
-	/**
-     * Update a batch of document in a collection.
-     * Delete all documents and insert new ones.
-     * @param {string} collection
-     * @param {object} data
-     */
-	async updateBatch (collection, data) {
-		if (!collection) {
-			return "No collection is defined";
-		}
-
-		await client.db(process.env.DB_NAME).collection(collection).deleteMany({});
-		await client.db(process.env.DB_NAME).collection(collection).insertMany(data);
-	}
-
-	/**
-     * Get current collection size
-     * @param {string} collection The collection name
-     * @returns {Promise<number>}
-     */
-	async getRowID (collection) {
-		return await client.db(process.env.DB_NAME).collection(collection).countDocuments() + 1;
-	}
+	get client () { return this.#pool.db(process.env.DB_NAME); }
 
 	get modulePath () { return "query"; }
 };

@@ -33,73 +33,37 @@ module.exports = function (fastify, opts, done) {
 			}
 		}
 		else {
+			const droplist = [];
 			const item = req.params.id.toLowerCase();
 
 			const tierRegex = /^t[1-9] (.*)$/;
 			const tierMatch = item.match(tierRegex);
 			if (tierMatch) {
-				const id = await ba.Utils.getEquipmentTypes(item);
-				if (id) {
-					const cache = await ba.Cache.get(id);
-					if (cache) {
-						res.send({
-							data: cache.data,
-							drops: cache.drops
-						});
+				const equipData = await ba.Equipment.getDatabyTier(item);
+				if (equipData) {
+					const drops = ba.Drops.get(equipData.id);
+					if (drops) {
+						for (const drop of drops) {
+							const stageData = ba.Stage.getStagebyId(drop.id);
+							droplist.push({
+								stageName: stageData.stageInfo.fullName,
+								dropAmount: drop.dropAmount,
+								dropChance: drop.dropChance / 100
+							});
+						}
 
-						return;
-					}
-
-					const data = ba.BlueArchiveEquipment.get(id);
-					if (data) {
-						const drops = ba.BlueArchiveDrop.get(data?.ID) ?? [];
-						res.send({
-							data,
-							drops
-						});
-
-						await ba.Cache.set({
-							key: id,
-							value: JSON.stringify({
-								data,
-								drops
-							}),
-							expireAt: 1_800_000
-						});
-
-						return;
+						return res.send({ data: equipData, drops: droplist });
 					}
 				}
 			}
 
-			const cache = await ba.Cache.get(item);
-			if (cache) {
-				res.send({
-					data: cache.data,
-					drops: cache.drops
-				});
-
-				return;
-			}
-
-			const data = ba.BlueArchiveEquipment.get(item);
+			const data = ba.Equipment.get(item);
 			if (data) {
-				const drops = ba.BlueArchiveDrop.get(data?.ID);
-				res.send({
+				const drops = ba.Drops.get(data.id);
+				return res.send({
 					data,
 					drops
 				});
-
-				await ba.Cache.set({
-					key: item,
-					value: JSON.stringify({
-						data,
-						drops
-					}),
-					expireAt: 1_800_000
-				});
-
-				return;
 			}
 		}
 

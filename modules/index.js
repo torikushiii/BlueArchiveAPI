@@ -13,11 +13,11 @@ module.exports = (async function (options = {}) {
 		"singleton/cache",
 		"singleton/utils",
 
-		"classes/equipment",
-		"classes/stage",
+		"classes/character",
 		"classes/drop",
+		"classes/equipment",
 		"classes/skill",
-		"classes/character"
+		"classes/stage"
 	];
 
 	const {
@@ -42,7 +42,7 @@ module.exports = (async function (options = {}) {
 			switch (moduleName) {
 				case "query": {
 					const Component = require("./singleton/query");
-					ba.Query = Component.singleton();
+					ba.Query = Component.singleton().client;
 					await new Promise(resolve => setTimeout(resolve, 500));
 					break;
 				}
