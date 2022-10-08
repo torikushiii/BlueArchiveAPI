@@ -195,4 +195,51 @@ module.exports = class Utils extends require("./template") {
 
 		return stuff;
 	}
+
+	async getBannerData () {
+		if (!this.#bannerData) {
+			this.#bannerData = await ba.Query.collection("GachaData").find({}).toArray();
+		}
+
+		const current = [];
+		const upcoming = [];
+		const ended = [];
+
+		for (const banner of this.#bannerData) {
+			const now = Date.now();
+			const startAt = banner.startAt;
+			const endAt = banner.endAt;
+
+			if (now >= startAt && now <= endAt) {
+				current.push(Utils.parseBannerData(banner));
+			}
+			else if (now < startAt) {
+				upcoming.push(Utils.parseBannerData(banner));
+			}
+			else if (now > endAt) {
+				ended.push(Utils.parseBannerData(banner));
+			}
+		}
+
+		return {
+			current,
+			upcoming,
+			ended
+		};
+	}
+
+	static parseBannerData (data) {
+		const rateups = [];
+		for (const rateup of data.rateup) {
+			const charData = ba.Character.get(rateup);
+			rateups.push(charData.name);
+		}
+
+		return {
+			gachaType: data.type,
+			startAt: new Date(data.startAt).toUTCString(),
+			endAt: new Date(data.endAt).toUTCString(),
+			rateups
+		};
+	}
 };
