@@ -19,7 +19,7 @@
 
 ```json
 {
-    "data": [
+    [
         "Akari",
         "Aris",
         "Aru",
@@ -77,7 +77,7 @@
 
 ```json
 {
-    "data": [
+    [
         "Airi",
         "Ayane",
         "Chinatsu",
@@ -122,7 +122,7 @@
 
 ```json
 {
-    "data": [
+    [
         "Ayane",
         "Hoshino",
         "Nonomi",
@@ -148,7 +148,7 @@
 
 ```json
 {
-    "data": [
+    [
         "Eimi",
         "Haruka",
         "Hoshino",
@@ -187,7 +187,7 @@
 
 ```json
 {
-    "data": [
+    [
         "Akari",
         "Asuna",
         "Azusa",
@@ -225,7 +225,7 @@
 
 ```json
 {
-    "data": [
+    [
         "Airi",
         "Akari",
         "Aru",
@@ -276,7 +276,7 @@
 
 ```json
 {
-    "data": [
+    [
         "Akari",
         "Azusa",
         "Chise",
@@ -316,6 +316,6 @@ Support multiple queries
 <summary>View Payload Example</summary>
 
 ```json
-{ "data": ["Sumire", "Tsubaki"] }
+{ ["Sumire", "Tsubaki"] }
 ```
 </details>

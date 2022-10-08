@@ -18,68 +18,46 @@ Get Equipment by Tier or ID
 ```json
 {
     "data": {
-        "ID": 6000,
-        "name": "Tennis Headband",
-        "description": "A tennis headband from Serval, a sportswear brand. It's made of a high-moisture-absorption material to prevent sweating during exercise.",
+        "id": 6000,
+        "localizeId": 1494732916,
+        "recipeId": 600,
         "category": "Hairpin",
         "rarity": "N",
         "maxLevel": 10,
-        "recipeID": 600,
         "tier": 1,
-        "tags": ["Equipment", "Hairpin"]
+        "tags": [
+            "Equipment",
+            "Hairpin"
+        ]
     },
     "drops": [
         {
-            "stageName": "[Normal] Main Chapter 01 - Stage 04",
-            "stageInfo": {
-                "ID": 1011104
-            },
-            "stageRewardID": 6000,
+            "stageName": "CHAPTER01_Normal_Main_Stage04",
             "dropAmount": 1,
             "dropChance": 30
         },
         {
-            "stageName": "[Hard] Main Chapter 01 - Stage 03",
-            "stageInfo": {
-                "ID": 1012103
-            },
-            "stageRewardID": 6000,
+            "stageName": "CHAPTER01_Hard_Main_Stage03",
             "dropAmount": 1,
             "dropChance": 60
         },
         {
-            "stageName": "[Normal] Main Chapter 02 - Stage 01",
-            "stageInfo": {
-                "ID": 1021101
-            },
-            "stageRewardID": 6000,
+            "stageName": "CHAPTER02_Normal_Main_Stage01",
             "dropAmount": 1,
             "dropChance": 40
         },
         {
-            "stageName": "[Normal] Main Chapter 02 - Stage 02",
-            "stageInfo": {
-                "ID": 1021102
-            },
-            "stageRewardID": 6000,
+            "stageName": "CHAPTER02_Normal_Main_Stage02",
             "dropAmount": 1,
             "dropChance": 40
         },
         {
-            "stageName": "[Normal] Main Chapter 02 - Stage 03",
-            "stageInfo": {
-                "ID": 1021103
-            },
-            "stageRewardID": 6000,
+            "stageName": "CHAPTER02_Normal_Main_Stage03",
             "dropAmount": 1,
             "dropChance": 30
         },
         {
-            "stageName": "[Hard] Main Chapter 02 - Stage 03",
-            "stageInfo": {
-                "ID": 1022103
-            },
-            "stageRewardID": 6000,
+            "stageName": "CHAPTER02_Hard_Main_Stage03",
             "dropAmount": 1,
             "dropChance": 80
         }
