@@ -7,10 +7,7 @@ module.exports = function (fastify, opts, done) {
 			return res.notFound("No banners found");
 		}
         
-		res.send({
-			status: 200,
-			data
-		});
+		res.send(data);
 	});
 
 	done();

@@ -114,7 +114,7 @@ module.exports = class Character extends require("./template") {
 
 		if (type === "true" || type === "false") {
 			const values = [...Character.data.values()];
-			const character = values.filter(i => i.isReleased === Boolean(type === true)
+			const character = values.filter(i => i.released === Boolean(type === "true")
 				&& i.playable
 				&& i.name !== "???"
 				&& i.name !== "LocalizeError"
@@ -125,7 +125,7 @@ module.exports = class Character extends require("./template") {
 				data.push(charData);
 			}
 
-			return data.map(i => i.character.name);
+			return data.map(i => i.name);
 		}
 		else if (typeof type === "undefined") {
 			const values = [...Character.data.values()];

@@ -9,26 +9,11 @@ module.exports = function (fastify, opts, done) {
 		if (req.query.id) {
 			const isId = Boolean(req.query.id === "true");
 			if (isId) {
-				const cache = await ba.Cache.get(req.params.id);
-				if (cache) {
-					res.send({
-						data: cache.data,
-						drops: cache.drops
-					});
-
-					return;
-				}
-
-				const data = ba.BlueArchiveEquipment.get(Number(req.params.id));
+				const data = ba.Equipment.get(Number(req.params.id));
 				if (data) {
-					const drops = ba.BlueArchiveDrop.get(data?.ID) ?? [];
+					const drops = ba.Drops.get(data.id);
 
-					res.send({
-						data,
-						drops
-					});
-
-					return;
+					return res.send({ data, drops });
 				}
 			}
 		}
@@ -55,15 +40,6 @@ module.exports = function (fastify, opts, done) {
 						return res.send({ data: equipData, drops: droplist });
 					}
 				}
-			}
-
-			const data = ba.Equipment.get(item);
-			if (data) {
-				const drops = ba.Drops.get(data.id);
-				return res.send({
-					data,
-					drops
-				});
 			}
 		}
 
