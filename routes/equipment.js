@@ -11,9 +11,19 @@ module.exports = function (fastify, opts, done) {
 			if (isId) {
 				const data = ba.Equipment.get(Number(req.params.id));
 				if (data) {
+					const droplist = [];
+					
 					const drops = ba.Drops.get(data.id);
+					for (const drop of drops) {
+						const stageData = ba.Stage.getStagebyId(drop.id);
+						droplist.push({
+							stageName: stageData.stageInfo.fullName,
+							dropAmount: drop.dropAmount,
+							dropChance: drop.dropChance / 100
+						});
+					}
 
-					return res.send({ data, drops });
+					return res.send({ data, drops: droplist });
 				}
 			}
 		}
