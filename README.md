@@ -9,7 +9,7 @@ Now Support Characters Data!
 
 **Hosted API at https://api.ennead.cc/buruaka** 
 
-ver: v1.41.164236
+ver: v1.44.174704
 
 ## Prerequisites
 
