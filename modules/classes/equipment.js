@@ -73,7 +73,7 @@ module.exports = class Equipment extends require("./template") {
 					&& Equipment.normalizeName(i.category) === Equipment.normalizeName(name)
 				);
 
-				if (tierData.length === 0) {
+				if (typeof tierData === "undefined") {
 					return null;
 				}
 
