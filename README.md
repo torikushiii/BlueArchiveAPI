@@ -9,8 +9,6 @@ Now Support Characters Data!
 
 **Hosted API at https://api.ennead.cc/buruaka** 
 
-ver: v1.44.182068
-
 ## Prerequisites
 
 - [Node.js](https://nodejs.org/): ^16.0.0
