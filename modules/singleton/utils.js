@@ -237,8 +237,8 @@ module.exports = class Utils extends require("./template") {
 
 		return {
 			gachaType: data.type,
-			startAt: new Date(data.startAt).toUTCString(),
-			endAt: new Date(data.endAt).toUTCString(),
+			startAt: data.startAt,
+			endAt: data.endAt,
 			rateups
 		};
 	}

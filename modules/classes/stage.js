@@ -70,27 +70,27 @@ module.exports = class Stage extends require("./template") {
 				stages.current.push({
 					seasonId: raid.id,
 					bossName: raid.boss,
-					startAt: new Date(raid.startAt).toUTCString(),
-					settleAt: new Date(raid.settleAt).toUTCString(),
-					endAt: new Date(raid.endAt).toUTCString()
+					startAt: raid.startAt,
+					settleAt: raid.settleAt,
+					endAt: raid.endAt
 				});
 			}
 			else if (now < startAt) {
 				stages.upcoming.push({
 					seasonId: raid.id,
 					bossName: raid.boss,
-					startAt: new Date(raid.startAt).toUTCString(),
-					settleAt: new Date(raid.settleAt).toUTCString(),
-					endAt: new Date(raid.endAt).toUTCString()
+					startAt: raid.startAt,
+					settleAt: raid.settleAt,
+					endAt: raid.endAt
 				});
 			}
 			else if (now > endAt) {
 				stages.ended.push({
 					seasonId: raid.id,
 					bossName: raid.boss,
-					startAt: new Date(raid.startAt).toUTCString(),
-					settleAt: new Date(raid.settleAt).toUTCString(),
-					endAt: new Date(raid.endAt).toUTCString()
+					startAt: raid.startAt,
+					settleAt: raid.settleAt,
+					endAt: raid.endAt
 				});
 			}
 		}
