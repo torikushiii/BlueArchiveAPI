@@ -139,6 +139,11 @@ module.exports = class Utils extends require("./template") {
 
 		const info = this.#characterLocalize.find(i => i.id === id);
 		const statData = this.#statData.find(i => i.id === id);
+
+		if (!info || !statData) {
+			return null;
+		}
+
 		if (statData) {
 			delete statData._id; // not sorry for this xd
 		}

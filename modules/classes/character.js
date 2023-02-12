@@ -136,6 +136,10 @@ module.exports = class Character extends require("./template") {
 
 			for (const char of character) {
 				const charData = await this.parseCharacterData(char, { allChars: true });
+				if (!charData) {
+					continue;
+				}
+				
 				data.push(charData);
 			}
 
@@ -196,6 +200,10 @@ module.exports = class Character extends require("./template") {
 
 		if (options.allChars) {
 			const charData = await ba.Utils.getCharacterData(data.id);
+			if (!charData) {
+				return null;
+			}
+
 			return {
 				id: data.id,
 				baseStar: data.baseStar,
