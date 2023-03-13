@@ -216,7 +216,8 @@ module.exports = class Character extends require("./template") {
 				role: data.role,
 				squadType: data.squadType,
 				weaponType: data.weaponType,
-				terrain: charData.topology
+				terrain: charData.topology,
+				school: data.school
 			};
 		}
 
