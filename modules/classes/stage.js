@@ -1,7 +1,8 @@
 const chalk = require("chalk");
 
 module.exports = class Stage extends require("./template") {
-	static data = new Map();
+	static dataGlobal = new Map();
+	static dataJapan = new Map();
 
 	constructor (data) {
 		super();
@@ -23,12 +24,12 @@ module.exports = class Stage extends require("./template") {
 		this.stageData = data.stageData ?? {};
 	}
 
-	static get (identifier) {
+	static get (identifier, region) {
 		if (identifier instanceof Stage) {
 			return identifier;
 		}
 		else if (typeof identifier === "number") {
-			return Stage.data.get(identifier);
+			return Stage.data.get(`${region}-${identifier}`);
 		}
 		else {
 			console.error(chalk `{red Invalid identifier for Stage.get(). Expected number!}`, {
@@ -53,14 +54,14 @@ module.exports = class Stage extends require("./template") {
 		}
 	}
 
-	static async raid () {
+	static async raid (region) {
 		const stages = {
 			current: [],
 			upcoming: [],
 			ended: []
 		};
 		
-		const raidData = await ba.Query.collection("RaidData").find({}).toArray();
+		const raidData = await ba.Query.collection(`${region}.RaidData`).find({}).toArray();
 		for (const raid of raidData) {
 			const startAt = raid.startAt;
 			const endAt = raid.endAt;
@@ -99,14 +100,18 @@ module.exports = class Stage extends require("./template") {
 	}
 
 	static async loadData () {
-		const data = await ba.Query.collection("StageDataMain").find({}).toArray();
-		if (data.length === 0) {
-			throw new Error("No stage data found.");
-		}
+		const regions = ["global", "japan"];
 
-		for (const stage of data) {
-			const stageData = new Stage(stage);
-			Stage.data.set(stageData.id, stageData);
+		for (const region of regions) {
+			const data = await ba.Query.collection(`${region}.StageDataMain`).find({}).toArray();
+			if (data.length === 0) {
+				throw new Error(`No stage data found for region ${region}!`);
+			}
+
+			for (const stage of data) {
+				const stageData = new Stage(stage);
+				Stage.data.set(`${region}-${stageData.id}`, stageData);
+			}
 		}
 	}
 

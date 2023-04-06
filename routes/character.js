@@ -2,7 +2,12 @@ module.exports = function (fastify, opts, done) {
 	const Router = fastify;
 	
 	Router.get("/", async (req, res) => {
-		const data = await ba.Character.getAll(req.query.released);
+		const region = req.query.region || "global";
+		if (!ba.Utils.isValidRegion(region)) {
+			return res.badRequest("Invalid region");
+		}
+
+		const data = await ba.Character.getAll(region);
 		if (!data) {
 			return res.notFound("No data found (?)");
 		}
@@ -17,7 +22,7 @@ module.exports = function (fastify, opts, done) {
 			return;
 		}
         
-		const data = await ba.Character.getCharacterbyQuery(req.query);
+		const data = ba.Character.getCharacterbyQuery(req.query);
 		if (data) {
 			res.send(data);
 		}
@@ -27,19 +32,24 @@ module.exports = function (fastify, opts, done) {
 	});
 
 	Router.get("/:id", async (req, res) => {
+		const region = req.query.region || "global";
+		if (!ba.Utils.isValidRegion(region)) {
+			return res.badRequest("Invalid region");
+		}
+
 		if (req.query.id) {
 			const isId = Boolean(req.query.id === "true");
 			if (isId) {
-				const data = ba.Character.get(Number(req.params.id));
+				const data = ba.Character.get(Number(req.params.id), region);
 				if (data) {
 					return res.send(data);
 				}
 			}
 		}
 		else {
-			const data = ba.Character.get(req.params.id);
+			const data = ba.Character.get(req.params.id, region);
 			if (data) {
-				const parsedCharacter = await ba.Character.parseCharacterData(data);
+				const parsedCharacter = await ba.Character.parseCharacterData(data, { region });
 				return res.send(parsedCharacter);
 			}
 		}

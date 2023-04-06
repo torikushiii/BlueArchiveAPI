@@ -39,14 +39,16 @@ module.exports = class Character extends require("./template") {
 		this.equipmentType = data.equipmentType;
 
 		this.tags = data.tags;
+
+		this.region = data.region;
 	}
 
-	static get (identifier) {
+	static get (identifier, region = "global") {
 		if (identifier instanceof Character) {
 			return identifier;
 		}
 		else if (typeof identifier === "number") {
-			return Character.data.get(identifier);
+			return Character.data.get(`${region}-${identifier}`);
 		}
 		else if (typeof identifier === "string") {
 			const normalized = Character.normalizeName(identifier);
@@ -66,7 +68,7 @@ module.exports = class Character extends require("./template") {
 		}
 	}
 
-	static getCharacterbyQuery (identifier) {
+	static getCharacterbyQuery (identifier, region = "global") {
 		if (identifier instanceof Character) {
 			return identifier;
 		}
@@ -93,6 +95,7 @@ module.exports = class Character extends require("./template") {
                 && value.playable
                 && value.name !== "???"
                 && value.name !== "LocalizeError"
+				&& value.region === region
 			);
 
 			if (data.length === 0) {
@@ -109,58 +112,46 @@ module.exports = class Character extends require("./template") {
 		}
 	}
 
-	static async getAll (type) {
+	static async getAll (region = "global") {
 		const data = [];
 
-		if (type === "true" || type === "false") {
-			const values = [...Character.data.values()];
-			const character = values.filter(i => i.released === Boolean(type === "true")
-				&& i.playable
-				&& i.name !== "???"
-				&& i.name !== "LocalizeError"
-			);
+		const values = [...Character.data.values()];
+		const character = values.filter(i => i.playable
+			&& i.name !== "???"
+			&& i.name !== "LocalizeError"
+			&& i.region === region
+		);
 
-			for (const char of character) {
-				const charData = await this.parseCharacterData(char, { allChars: true });
-				data.push(charData);
-			}
-
-			return data.map(i => i.name);
-		}
-		else if (typeof type === "undefined") {
-			const values = [...Character.data.values()];
-			const character = values.filter(i => i.playable
-				&& i.name !== "???"
-				&& i.name !== "LocalizeError"
-			);
-
-			for (const char of character) {
-				const charData = await this.parseCharacterData(char, { allChars: true });
-				if (!charData) {
-					continue;
-				}
-				
-				data.push(charData);
-			}
-
-			return data;
-		}
-	}
-
-	static async loadData () {
-		const data = await ba.Query.collection("CharacterData").find({}).toArray();
-		if (data.length === 0) {
-			throw new Error("No character data found.");
-		}
-
-		for (const character of data) {
-			const charData = await ba.Utils.getCharacterName(character.localizeEtcId);
+		for (const char of character) {
+			const charData = await this.parseCharacterData(char, { allChars: true, region });
 			if (!charData) {
 				continue;
 			}
 			
-			const characterData = new Character({ ...character, name: charData.name });
-			Character.data.set(characterData.id, characterData);
+			data.push(charData);
+		}
+
+		return data;
+	}
+
+	static async loadData () {
+		const regions = ["global", "japan"];
+
+		for (const region of regions) {
+			const data = await ba.Query.collection(`${region}.CharacterData`).find({}).toArray();
+			if (data.length === 0) {
+				throw new Error(`No character data found for region ${region}!`);
+			}
+
+			for (const character of data) {
+				const charData = await ba.Utils.getCharacterName(character.localizeEtcId, region);
+				if (!charData) {
+					continue;
+				}
+				
+				const characterData = new Character({ ...character, name: charData.name, region });
+				Character.data.set(`${region}-${characterData.id}`, characterData);
+			}
 		}
 	}
 
@@ -199,7 +190,7 @@ module.exports = class Character extends require("./template") {
 		};
 
 		if (options.allChars) {
-			const charData = await ba.Utils.getCharacterData(data.id);
+			const charData = await ba.Utils.getCharacterData(data.id, options.region);
 			if (!charData) {
 				return null;
 			}
@@ -221,7 +212,8 @@ module.exports = class Character extends require("./template") {
 			};
 		}
 
-		const skillData = ba.Skill.get(data.id);
+		const region = options.region ?? "global";
+		const skillData = ba.Skill.get(data.id, { region });
 		if (skillData) {
 			for (const [type, name] of Object.entries(skillData)) {
 				if (type === "id") {
@@ -230,25 +222,25 @@ module.exports = class Character extends require("./template") {
 
 				switch (type) {
 					case "skillEx": {
-						const exInfo = await ba.Utils.getSkillData(name);
+						const exInfo = await ba.Utils.getSkillData(name, region);
 						skills.ex.push(...exInfo);
 						break;
 					}
 
 					case "normal": {
-						const normalInfo = await ba.Utils.getSkillData(name);
+						const normalInfo = await ba.Utils.getSkillData(name, region);
 						skills.normal.push(...normalInfo);
 						break;
 					}
 
 					case "passive": {
-						const passiveInfo = await ba.Utils.getSkillData(name);
+						const passiveInfo = await ba.Utils.getSkillData(name, region);
 						skills.passive.push(...passiveInfo);
 						break;
 					}
 
 					case "sub": {
-						const subInfo = await ba.Utils.getSkillData(name);
+						const subInfo = await ba.Utils.getSkillData(name, region);
 						skills.sub.push(...subInfo);
 						break;
 					}
@@ -259,7 +251,7 @@ module.exports = class Character extends require("./template") {
 			}
 		}
 
-		const charData = await ba.Utils.getCharacterData(data.id);
+		const charData = await ba.Utils.getCharacterData(data.id, region);
 		return {
 			id: data.id,
 			isReleased: data.released,

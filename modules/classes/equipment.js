@@ -1,7 +1,8 @@
 const chalk = require("chalk");
 
 module.exports = class Equipment extends require("./template") {
-	static data = new Map();
+	static dataGlobal = new Map();
+	static dataJapan = new Map();
 
 	constructor (data) {
 		super();
@@ -23,12 +24,13 @@ module.exports = class Equipment extends require("./template") {
 		this.tags = data.tags;
 	}
 
-	static get (identifier) {
+	static get (identifier, region) {
 		if (identifier instanceof Equipment) {
 			return identifier;
 		}
 		else if (typeof identifier === "number") {
-			const values = [...Equipment.data.values()];
+			const data = region === "global" ? Equipment.dataGlobal : Equipment.dataJapan;
+			const values = [...data.values()];
 			const equipmentData = values.filter(i => i.id === identifier);
 			if (equipmentData.length === 0) {
 				return null;
@@ -90,14 +92,23 @@ module.exports = class Equipment extends require("./template") {
 	}
 
 	static async loadData () {
-		const data = await ba.Query.collection("EquipmentData").find({}).toArray();
-		if (data.length === 0) {
-			throw new Error("No equipment data found.");
-		}
+		const regions = ["global", "japan"];
 
-		for (const equipment of data) {
-			const equipmentData = new Equipment(equipment);
-			Equipment.data.set(Symbol(equipmentData.id), equipmentData);
+		for (const region of regions) {
+			const data = await ba.Query.collection(`${region}.EquipmentData`).find({}).toArray();
+			if (data.length === 0) {
+				throw new Error(`No equipment data found for region ${region}`);
+			}
+
+			for (const equipment of data) {
+				const equipmentData = new Equipment(equipment);
+				if (region === "global") {
+					Equipment.dataGlobal.set(Symbol(equipmentData.id), equipmentData);
+				}
+				else if (region === "japan") {
+					Equipment.dataJapan.set(Symbol(equipmentData.id), equipmentData);
+				}
+			}
 		}
 	}
 

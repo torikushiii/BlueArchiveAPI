@@ -1,11 +1,10 @@
 module.exports = class Utils extends require("./template") {
-	#localizeEtc;
-	#statData;
-	#characterLocalize;
-	#skillLocalize;
-	#skillList;
-	#bannerData;
-	#characters = new Map();
+	#localizeEtc = {};
+	#statData = {};
+	#characterLocalize = {};
+	#skillLocalize = {};
+	#skillList = {};
+	#bannerData = {};
 
 	static terrainTypes = {
 		Urban: {
@@ -100,6 +99,10 @@ module.exports = class Utils extends require("./template") {
 		return Utils.module;
 	}
 
+	isValidRegion (region) {
+		return ["global", "japan"].includes(region);
+	}
+
 	async getEquipmentData (id) {
 		if (!this.#localizeEtc) {
 			this.#localizeEtc = await ba.Query.collection("LocalizeEtc").find({}).toArray();
@@ -120,25 +123,25 @@ module.exports = class Utils extends require("./template") {
 		return equipment;
 	}
 
-	async getCharacterName (id) {
-		if (!this.#localizeEtc) {
-			this.#localizeEtc = await ba.Query.collection("LocalizeEtc").find({}).toArray();
+	async getCharacterName (id, region) {
+		if (!this.#localizeEtc[region]) {
+			this.#localizeEtc[region] = await ba.Query.collection(`${region}.LocalizeEtc`).find({}).toArray();
 		}
 
-		return this.#localizeEtc.find(i => i.key === id);
+		return this.#localizeEtc[region].find(i => i.key === id);
 	}
 
-	async getCharacterData (id) {
-		if (!this.#characterLocalize) {
-			this.#characterLocalize = await ba.Query.collection("CharacterLocalize").find({}).toArray();
+	async getCharacterData (id, region) {
+		if (!this.#characterLocalize[region]) {
+			this.#characterLocalize[region] = await ba.Query.collection(`${region}.CharacterLocalize`).find({}).toArray();
 		}
 		
-		if (!this.#statData) {
-			this.#statData = await ba.Query.collection("CharacterStat").find({}).toArray();
+		if (!this.#statData[region]) {
+			this.#statData[region] = await ba.Query.collection(`${region}.CharacterStat`).find({}).toArray();
 		}
 
-		const info = this.#characterLocalize.find(i => i.id === id);
-		const statData = this.#statData.find(i => i.id === id);
+		const info = this.#characterLocalize[region].find(i => i.id === id);
+		const statData = this.#statData[region].find(i => i.id === id);
 
 		if (!info || !statData) {
 			return null;
@@ -159,12 +162,12 @@ module.exports = class Utils extends require("./template") {
 		};
 	}
 
-	async getSkillInfo (id) {
-		if (!this.#skillLocalize) {
-			this.#skillLocalize = await ba.Query.collection("SkillLocalize").find({}).toArray();
+	async getSkillInfo (id, region) {
+		if (!this.#skillLocalize[region]) {
+			this.#skillLocalize[region] = await ba.Query.collection(`${region}.SkillLocalize`).find({}).toArray();
 		}
 
-		const skill = this.#skillLocalize.find(i => i.id === id);
+		const skill = this.#skillLocalize[region].find(i => i.id === id);
 		if (!skill) {
 			return null;
 		}
@@ -176,16 +179,16 @@ module.exports = class Utils extends require("./template") {
 		};
 	}
 
-	async getSkillData (name) {
-		if (!this.#skillList) {
-			this.#skillList = await ba.Query.collection("SkillListTable").find({}).toArray();
+	async getSkillData (name, region) {
+		if (!this.#skillList[region]) {
+			this.#skillList[region] = await ba.Query.collection(`${region}.SkillListTable`).find({}).toArray();
 		}
 
 		const stuff = [];
-		const skills = this.#skillList.filter(i => i.groupId === name);
+		const skills = this.#skillList[region].filter(i => i.groupId === name);
 		if (skills.length !== 0) {
 			for (const skill of skills) {
-				const skillInfo = await this.getSkillInfo(skill.localizeSkillId);
+				const skillInfo = await this.getSkillInfo(skill.localizeSkillId, region);
 				if (skillInfo) {
 					stuff.push({
 						level: skill.level,
@@ -201,28 +204,28 @@ module.exports = class Utils extends require("./template") {
 		return stuff;
 	}
 
-	async getBannerData () {
-		if (!this.#bannerData) {
-			this.#bannerData = await ba.Query.collection("GachaData").find({}).toArray();
+	async getBannerData (region) {
+		if (!this.#bannerData[region]) {
+			this.#bannerData[region] = await ba.Query.collection(`${region}.GachaData`).find({}).toArray();
 		}
 
 		const current = [];
 		const upcoming = [];
 		const ended = [];
 
-		for (const banner of this.#bannerData) {
+		for (const banner of this.#bannerData[region]) {
 			const now = Date.now();
 			const startAt = banner.startAt;
 			const endAt = banner.endAt;
 
 			if (now >= startAt && now <= endAt) {
-				current.push(Utils.parseBannerData(banner));
+				current.push(Utils.parseBannerData(banner, region));
 			}
 			else if (now < startAt) {
-				upcoming.push(Utils.parseBannerData(banner));
+				upcoming.push(Utils.parseBannerData(banner, region));
 			}
 			else if (now > endAt) {
-				ended.push(Utils.parseBannerData(banner));
+				ended.push(Utils.parseBannerData(banner, region));
 			}
 		}
 
@@ -233,10 +236,10 @@ module.exports = class Utils extends require("./template") {
 		};
 	}
 
-	static parseBannerData (data) {
+	static parseBannerData (data, region) {
 		const rateups = [];
 		for (const rateup of data.rateup) {
-			const charData = ba.Character.get(rateup);
+			const charData = ba.Character.get(rateup, region);
 			rateups.push(charData.name);
 		}
 

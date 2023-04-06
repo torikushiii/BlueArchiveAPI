@@ -1,7 +1,8 @@
 const chalk = require("chalk");
 
 module.exports = class Drops extends require("./template") {
-	static data = new Map();
+	static dataGlobal = new Map();
+	static dataJapan = new Map();
 
 	constructor (data) {
 		super();
@@ -17,12 +18,13 @@ module.exports = class Drops extends require("./template") {
 		this.dropChance = data.dropChance;
 	}
 
-	static get (identifier) {
+	static get (identifier, region) {
 		if (identifier instanceof Drops) {
 			return identifier;
 		}
 		else if (typeof identifier === "number") {
-			const values = [...Drops.data.values()];
+			const data = region === "global" ? Drops.dataGlobal : Drops.dataJapan;
+			const values = [...data.values()];
 			const dropData = values.filter(i => i.stageRewardId === identifier);
 			return dropData;
 		}
@@ -52,16 +54,26 @@ module.exports = class Drops extends require("./template") {
 	}
 
 	static async loadData () {
-		const data = await ba.Query.collection("DropDataMain").find({}).toArray();
-		if (data.length === 0) {
-			throw new Error("No drop data found.");
-		}
+		const regions = ["global", "japan"];
 
-		for (const drop of data) {
-			const dropData = new Drops(drop);
-			Drops.data.set(Symbol(dropData.id), dropData);
+		for (const region of regions) {
+			const data = await ba.Query.collection(`${region}.DropDataMain`).find({}).toArray();
+			if (data.length === 0) {
+				throw new Error(`No drop data found for region ${region}!`);
+			}
+
+			for (const drop of data) {
+				const dropData = new Drops(drop);
+				if (region === "global") {
+					Drops.dataGlobal.set(Symbol(dropData.id), dropData);
+				}
+				else if (region === "japan") {
+					Drops.dataJapan.set(Symbol(dropData.id), dropData);
+				}
+			}
 		}
 	}
+
 
 	static destroy () {
 		Drops.data.clear();

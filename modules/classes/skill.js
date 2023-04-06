@@ -1,7 +1,8 @@
 const chalk = require("chalk");
 
 module.exports = class Skill extends require("./template") {
-	static data = new Map();
+	static dataGlobal = new Map();
+	static dataJapan = new Map();
 
 	constructor (data) {
 		super();
@@ -17,12 +18,13 @@ module.exports = class Skill extends require("./template") {
 		this.sub = data.sub;
 	}
 
-	static get (identifier) {
+	static get (identifier, region) {
 		if (identifier instanceof Skill) {
 			return identifier;
 		}
 		else if (typeof identifier === "number") {
-			const values = [...Skill.data.values()];
+			const data = region === "global" ? Skill.dataGlobal : Skill.dataJapan;
+			const values = [...data.values()];
 			return values.find(i => i.id === identifier);
 		}
 		else {
@@ -34,14 +36,23 @@ module.exports = class Skill extends require("./template") {
 	}
 
 	static async loadData () {
-		const data = await ba.Query.collection("SkillListData").find({}).toArray();
-		if (data.length === 0) {
-			throw new Error("No skill data found.");
-		}
+		const regions = ["global", "japan"];
 
-		for (const skill of data) {
-			const skillData = new Skill(skill);
-			Skill.data.set(Symbol(skillData.id), skillData);
+		for (const region of regions) {
+			const data = await ba.Query.collection(`${region}.SkillListData`).find({}).toArray();
+			if (data.length === 0) {
+				throw new Error(`No skill data found for region ${region}!`);
+			}
+
+			for (const skill of data) {
+				const skillData = new Skill(skill);
+				if (region === "global") {
+					Skill.dataGlobal.set(Symbol(skillData.id), skillData);
+				}
+				else if (region === "japan") {
+					Skill.dataJapan.set(Symbol(skillData.id), skillData);
+				}
+			}
 		}
 	}
 
