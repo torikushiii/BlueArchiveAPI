@@ -7,6 +7,8 @@ Get all character list with their basic info
 
 > [https://api.ennead.cc/buruaka/character/](https://api.ennead.cc/buruaka/character)
 
+> [https://api.ennead.cc/buruaka/character?region=japan](https://api.ennead.cc/buruaka/character?region=japan)
+
 > Returns: `Character Object`
 <details>
 <summary>View Payload Example</summary>
@@ -73,13 +75,11 @@ Get all character list with their basic info
 ```
 </details>
 
-Get characters by their region
-
-> [https://api.ennead.cc/buruaka/character?region=japan](https://api.ennead.cc/buruaka/character?region=japan)
-
 Get a single character
 
 > [https://api.ennead.cc/buruaka/character/aru](https://api.ennead.cc/buruaka/character/aru)
+
+> [https://api.ennead.cc/buruaka/character/カホ?region=japan](https://api.ennead.cc/buruaka/character/カホ?region=japan)
 
 > GET `character/:character` | `character/aru`
 
