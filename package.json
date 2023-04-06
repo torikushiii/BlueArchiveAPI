@@ -21,7 +21,6 @@
     "@fastify/cors": "^8.1.0",
     "@fastify/sensible": "^5.1.0",
     "fastify": "^4.3.0",
-    "ioredis": "^5.2.2",
     "mongodb": "^4.8.1",
     "pino": "^8.4.0",
     "pino-pretty": "^8.1.0"
