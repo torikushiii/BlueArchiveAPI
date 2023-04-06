@@ -5,6 +5,7 @@
 ## Get Raids
 Display all current and future raids
 > [https://api.ennead.cc/buruaka/raid](https://api.ennead.cc/buruaka/raid)
+
 > [https://api.ennead.cc/buruaka/raid?region=japan](https://api.ennead.cc/buruaka/raid?region=japan)
 
 > Returns : `Raid Object`

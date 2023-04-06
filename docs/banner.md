@@ -5,6 +5,7 @@
 ## Get Gacha Banners
 Display all current and past banners
 > [https://api.ennead.cc/buruaka/banner](https://api.ennead.cc/buruaka/banner)
+
 > [https://api.ennead.cc/buruaka/banner?region=japan](https://api.ennead.cc/buruaka/banner?region=japan)
 
 > Returns : `Banner Object`
