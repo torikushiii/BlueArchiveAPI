@@ -50,6 +50,10 @@ module.exports = function (fastify, opts, done) {
 			const data = ba.Character.get(req.params.id, region);
 			if (data) {
 				const parsedCharacter = await ba.Character.parseCharacterData(data, { region });
+				if (!parsedCharacter) {
+					return res.notFound("No character with such ID/name was found!");
+				}
+				
 				return res.send(parsedCharacter);
 			}
 		}

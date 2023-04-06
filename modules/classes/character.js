@@ -252,6 +252,10 @@ module.exports = class Character extends require("./template") {
 		}
 
 		const charData = await ba.Utils.getCharacterData(data.id, region);
+		if (!charData) {
+			return null;
+		}
+		
 		return {
 			id: data.id,
 			isReleased: data.released,
