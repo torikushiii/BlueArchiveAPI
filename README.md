@@ -1,9 +1,12 @@
 
 # Blue Archive API
 
-## *This API data is mainly based from global version of Blue Archive*
+## *This API provides data for both the global and Japanese versions of Blue Archive.*
 
-API that provides data from Blue Archive.
+- [Blue Archive EN](https://bluearchive.nexon.com/home): Official EN Website
+- [Blue Archive JP](https://bluearchive.jp/): Official JP Website
+
+API that provides various data from the game Blue Archive. If you want to contribute to this project, feel free to open a pull request or an issue. If you want to support me, you can donate to my [Ko-Fi](https://ko-fi.com/torikushiii).
 
 **Hosted API at https://api.ennead.cc/buruaka** 
 
