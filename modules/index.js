@@ -10,7 +10,6 @@ module.exports = (async function (options = {}) {
 
 	const files = [
 		"singleton/query",
-		"singleton/cache",
 		"singleton/utils",
 
 		"classes/character",
