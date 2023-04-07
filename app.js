@@ -3,7 +3,7 @@ const logger = require("./lib/logger");
 
 (async function () {
 	require("./db-access");
-	await require("./modules/index")();
+	globalThis.ba = await require("./modules/index")();
 	const subroutes = [
 		"character",
 		"equipment",
