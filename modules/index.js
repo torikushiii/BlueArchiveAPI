@@ -1,5 +1,3 @@
-const logger = require("../lib/logger");
-
 module.exports = (async function (options = {}) {
 	/**
      * Global namespace
@@ -33,7 +31,7 @@ module.exports = (async function (options = {}) {
 			continue;
 		}
 
-		logger.info(`[LOADER] || Loading ${file}`);
+		console.log(`[LOADER] || Loading ${file}`);
 		const start = process.hrtime.bigint();
         
 		const [type, moduleName] = file.split("/");
@@ -70,8 +68,10 @@ module.exports = (async function (options = {}) {
 		}
 
 		const end = process.hrtime.bigint();
-		logger.warn(`[LOADER] || ${moduleName} loaded in ${Number(end - start) / 1e6}ms`);
+		console.log(`[LOADER] || ${moduleName} loaded in ${Number(end - start) / 1e6}ms`);
 	}
 
 	console.groupEnd();
+
+	return globalThis.ba;
 });
