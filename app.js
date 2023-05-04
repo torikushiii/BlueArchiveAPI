@@ -40,5 +40,9 @@ const logger = require("./lib/logger");
 		res.notFound("That endpoint does not exist");
 	});
 
+	fastify.get("/buruaka", (req, res) => {
+		res.redirect(302, "/buruaka/");
+	});
+
 	fastify.listen({ port: config.port, host: config.host });
 })();
