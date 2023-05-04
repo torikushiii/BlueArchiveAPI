@@ -163,7 +163,8 @@ module.exports = class Character extends require("./template") {
 		const types = {
 			Unarmed: "Special Armor",
 			HeavyArmor: "Heavy Armor",
-			LightArmor: "Light Armor"
+			LightArmor: "Light Armor",
+			ElasticArmor: "Elastic Armor"
 		};
 
 		return types[armorType] ?? "???";
@@ -274,7 +275,8 @@ module.exports = class Character extends require("./template") {
 			},
 			info: {
 				age: charData.info.age,
-				artis: charData.info.artistName,
+				height: charData.info.height,
+				artist: charData.info.artistName,
 				birthDate: charData.info.birthDate,
 				club: data.club,
 				school: data.school,
