@@ -9,7 +9,8 @@ const logger = require("./lib/logger");
 		"equipment",
 		"stage",
 		"raid",
-		"banner"
+		"banner",
+		"image"
 	];
 
 	const config = ba.Config;
