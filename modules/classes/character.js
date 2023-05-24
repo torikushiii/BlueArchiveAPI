@@ -1,4 +1,5 @@
 const chalk = require("chalk");
+const { domain } = require("../config.js");
 
 module.exports = class Character extends require("./template") {
 	static data = new Map();
@@ -35,6 +36,8 @@ module.exports = class Character extends require("./template") {
 		this.club = data.club;
 
 		this.school = data.school;
+
+		this.imageIdentifier = data.imageIdentifier;
 
 		this.equipmentType = data.equipmentType;
 
@@ -256,7 +259,12 @@ module.exports = class Character extends require("./template") {
 		if (!charData) {
 			return null;
 		}
-		
+
+		let image = {};
+		if (domain && domain !== null) {
+			image = this.getImage(data.imageIdentifier, domain);
+		}
+
 		return {
 			id: data.id,
 			isReleased: data.released,
@@ -283,9 +291,18 @@ module.exports = class Character extends require("./template") {
 				schoolYear: charData.info.schoolYear,
 				voiceActor: charData.info.voiceActor
 			},
+			image,
 			stat: charData.stat,
 			terrain: charData.topology,
 			skills
+		};
+	}
+
+	static getImage (identifier, domain) {
+		return {
+			icon: `${domain}/image/icon/${identifier}`,
+			lobby: `${domain}/image/lobby/${identifier}`,
+			portrait: `${domain}/image/portrait/${identifier}`
 		};
 	}
 
