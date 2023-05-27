@@ -29,7 +29,7 @@ const logger = require("./lib/logger");
 			status: 200,
 			version: config.version,
 			uptime: Math.round(Date.now() - process.uptime() * 1000),
-			endpoints: subroutes
+			endpoints: subroutes.filter((route) => route !== "image")
 		});
 	});
 
