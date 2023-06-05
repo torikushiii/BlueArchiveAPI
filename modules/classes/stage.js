@@ -39,12 +39,12 @@ module.exports = class Stage extends require("./template") {
 		}
 	}
 
-	static getStagebyId (identifier) {
+	static getStagebyId (identifier, region = "global") {
 		if (identifier instanceof Stage) {
 			return identifier;
 		}
 		else if (typeof identifier === "number") {
-			return Stage.data.get(identifier);
+			return Stage.data.get(`${region}-${identifier}`);
 		}
 		else {
 			console.error(chalk `{red Invalid identifier for Stage.getStagebyId(). Expected number!}`, {
