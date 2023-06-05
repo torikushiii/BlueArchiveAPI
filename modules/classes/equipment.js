@@ -64,7 +64,7 @@ module.exports = class Equipment extends require("./template") {
 			};
 
 			const [tier, name] = identifier.split(" ");
-			const values = [...Equipment.data.values()];
+			const values = [...Equipment.dataGlobal.values()];
 			if (tierTypes[tier] === 1) {
 				return this.parseEquipmentData(values.find(i => i.tier === tierTypes[tier]
 					&& Equipment.normalizeName(i.category) === Equipment.normalizeName(name))
