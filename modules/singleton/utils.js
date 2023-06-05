@@ -103,9 +103,9 @@ module.exports = class Utils extends require("./template") {
 		return ["global", "japan"].includes(region);
 	}
 
-	async getEquipmentData (id) {
-		if (!this.#localizeEtc) {
-			this.#localizeEtc = await ba.Query.collection("LocalizeEtc").find({}).toArray();
+	async getEquipmentData (id, region = "global") {
+		if (!this.#localizeEtc[region]) {
+			this.#localizeEtc[region] = await ba.Query.collection(`${region}.LocalizeEtc`).find({}).toArray();
 		}
 
 		const equipmentData = ba.Equipment.get(id);
@@ -113,7 +113,7 @@ module.exports = class Utils extends require("./template") {
 			return null;
 		}
 
-		const equipmentLoc = this.#localizeEtc.find(i => i.key === equipmentData.localizeId);
+		const equipmentLoc = this.#localizeEtc[region].find(i => i.key === equipmentData.localizeId);
 		const equipment = {
 			id: equipmentData.id,
 			name: equipmentLoc.name,
