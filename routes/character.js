@@ -1,64 +1,89 @@
 module.exports = function (fastify, opts, done) {
 	const Router = fastify;
-	
+
 	Router.get("/", async (req, res) => {
 		const region = req.query.region || "global";
-		if (!ba.Utils.isValidRegion(region)) {
+		if (!["global", "japan"].includes(region)) {
 			return res.badRequest("Invalid region");
 		}
 
-		const data = await ba.Character.getAll(region);
+		const data = await ba.Character.get(null, { getAll: true, region });
 		if (!data) {
-			return res.notFound("No data found (?)");
+			return res.notFound();
 		}
 
-		return res.send({ data });
+		if (req.query.star) {
+			const star = Number(req.query.star);
+			if (isNaN(star)) {
+				return res.badRequest("Invalid character rarity");
+			}
+
+			const filteredData = data.filter(i => i.baseStar === star);
+			if (filteredData.length === 0) {
+				return res.notFound();
+			}
+
+			return res.send(filteredData);
+		}
+
+		return res.send(data);
 	});
 
 	Router.get("/query", async (req, res) => {
-		if (Object.keys(req.query).length === 0) {
-			res.badRequest("No query parameters are given!");
+		const region = req.query.region || "global";
+		if (!["global", "japan"].includes(region)) {
+			return res.badRequest("Invalid region");
+		}
 
-			return;
+		for (const key in req.query) {
+			req.query[key] = req.query[key].toLowerCase();
 		}
-        
-		const data = ba.Character.getCharacterbyQuery(req.query);
-		if (data) {
-			res.send(data);
+
+		const data = await ba.Character.getCharacterByQuery(req.query, { region });
+		if (!data) {
+			return res.notFound();
 		}
-		else {
-			res.notFound("No character found with that matching query!");
-		}
+
+		return res.send(data);
 	});
 
-	Router.get("/:id", async (req, res) => {
+	Router.get("/:character", async (req, res) => {
 		const region = req.query.region || "global";
-		if (!ba.Utils.isValidRegion(region)) {
+		if (!["global", "japan"].includes(region)) {
 			return res.badRequest("Invalid region");
 		}
 
 		if (req.query.id) {
-			const isId = Boolean(req.query.id === "true");
-			if (isId) {
-				const data = ba.Character.get(Number(req.params.id), region);
-				if (data) {
-					return res.send(data);
+			const characterId = Boolean(req.query.id === "true");
+			if (characterId) {
+				const data = await ba.Character.get(Number(req.params.character), { region });
+				if (!data) {
+					return res.notFound();
 				}
-			}
-		}
-		else {
-			const data = ba.Character.get(req.params.id, region);
-			if (data) {
-				const parsedCharacter = await ba.Character.parseCharacterData(data, { region });
+
+				const parsedCharacter = await ba.Character.buildCharacterObject(data, { region });
 				if (!parsedCharacter) {
-					return res.notFound("No character with such ID/name was found!");
+					return res.notFound("No character data found with that identifier");
 				}
-				
+
 				return res.send(parsedCharacter);
 			}
 		}
+		else {
+			const data = await ba.Character.get(req.params.character, { region });
+			if (!data) {
+				return res.notFound();
+			}
 
-		res.notFound("No character with such ID/name was found!");
+			const parsedCharacter = await ba.Character.buildCharacterObject(data, { region });
+			if (!parsedCharacter) {
+				return res.notFound("No character data found with that identifier");
+			}
+
+			return res.send(parsedCharacter);
+		}
+
+		return res.notFound();
 	});
 
 	done();

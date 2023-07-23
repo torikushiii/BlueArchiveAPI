@@ -28,8 +28,4 @@ If you want to have the API running on a different port, change the port on `con
 
 # REST API - DOCUMENTATION
 
-Moved to [docs](https://github.com/torikushiii/BlueArchiveAPI/tree/main/docs) folder
-
-### License
-
-Licensed under Open Software License v3.0
+Moved to [docs](https://github.com/torikushiii/BlueArchiveAPI/tree/main/docs) folder.

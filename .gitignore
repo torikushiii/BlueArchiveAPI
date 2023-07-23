@@ -79,6 +79,6 @@ typings/
 bun.lockb
 
 assets/
-modules/config.js
+core/config.js
 types.js
 db-access.js

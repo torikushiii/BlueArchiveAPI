@@ -3,17 +3,56 @@ module.exports = function (fastify, opts, done) {
 
 	Router.get("/", async (req, res) => {
 		const region = req.query.region || "global";
-		if (!ba.Utils.isValidRegion(region)) {
+		if (!["global", "japan"].includes(region)) {
 			return res.badRequest("Invalid region");
 		}
-		
-		const data = await ba.Stage.raid(region);
-		if (data.upcoming.length !== 0 || data.current.length !== 0 || data.ended.length !== 0) {
-			res.send(data);
+
+		const raidData = await ba.Query.collection(`${region}.RaidData`).find({}).toArray();
+		if (!raidData || raidData.length === 0) {
+			return res.notFound();
 		}
-		else {
-			res.notFound("No raid data found");
+
+		const stages = {
+			current: [],
+			upcoming: [],
+			ended: []
+		};
+
+		for (const raid of raidData) {
+			const startAt = raid.startAt;
+			const endAt = raid.endAt;
+			const now = new Date();
+
+			if (now > startAt && now < endAt) {
+				stages.current.push({
+					seasonId: raid.id,
+					bossName: raid.boss,
+					startAt: raid.startAt,
+					settleAt: raid.settleAt,
+					endAt: raid.endAt
+				});
+			}
+			else if (now < startAt) {
+				stages.upcoming.push({
+					seasonId: raid.id,
+					bossName: raid.boss,
+					startAt: raid.startAt,
+					settleAt: raid.settleAt,
+					endAt: raid.endAt
+				});
+			}
+			else if (now > endAt) {
+				stages.ended.push({
+					seasonId: raid.id,
+					bossName: raid.boss,
+					startAt: raid.startAt,
+					settleAt: raid.settleAt,
+					endAt: raid.endAt
+				});
+			}
 		}
+
+		return res.send(stages);
 	});
 
 	done();

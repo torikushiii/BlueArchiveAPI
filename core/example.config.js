@@ -3,6 +3,5 @@ module.exports = {
 	host: "0.0.0.0",
 	port: 80,
 	domain: null,
-	hostname: "example.com",
-	redis_configuration: {}
+	hostname: "example.com"
 };

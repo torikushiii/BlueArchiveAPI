@@ -1,20 +1,14 @@
 module.exports = (async function (options = {}) {
-	/**
-     * Global namespace
-     * @namespace
-     * @type {Object}
-     */
 	globalThis.ba = {};
 
 	const files = [
+		"singleton/logger",
+
 		"singleton/query",
 		"singleton/utils",
 
 		"classes/character",
-		"classes/drop",
-		"classes/equipment",
-		"classes/skill",
-		"classes/stage"
+		"classes/skill"
 	];
 
 	const {
@@ -38,21 +32,20 @@ module.exports = (async function (options = {}) {
 		if (type === "singleton") {
 			switch (moduleName) {
 				case "query": {
-					const Component = require("./singleton/query");
+					const Component = require("./singletons/query");
 					ba.Query = Component.singleton().client;
-					await new Promise(resolve => setTimeout(resolve, 500));
-					break;
-				}
-
-				case "cache": {
-					const Component = require("./singleton/cache");
-					ba.Cache = Component.singleton();
 					break;
 				}
 
 				case "utils": {
-					const Component = require("./singleton/utils");
+					const Component = require("./singletons/utils");
 					ba.Utils = Component.singleton();
+					break;
+				}
+
+				case "logger": {
+					const Component = require("./singletons/logger");
+					ba.Logger = Component.singleton();
 					break;
 				}
 			}

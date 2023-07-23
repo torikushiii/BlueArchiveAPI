@@ -1,7 +1,5 @@
 module.exports = class BlueArchiveTemplate {
 	static data = new Map();
-	static dataGlobal = new Map();
-	static dataJapan = new Map();
 
 	static async initialize () {
 		await this.loadData();

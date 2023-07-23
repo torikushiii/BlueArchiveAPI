@@ -3,16 +3,13 @@ module.exports = function (fastify, opts, done) {
 
 	Router.get("/", async (req, res) => {
 		const region = req.query.region || "global";
-		if (!ba.Utils.isValidRegion(region)) {
+		if (!["global", "japan"].includes(region)) {
 			return res.badRequest("Invalid region");
 		}
-		
-		const data = await ba.Utils.getBannerData(region);
-		if (data.current.length === 0 && data.ended.length === 0) {
-			return res.notFound("No banners found");
-		}
-        
-		res.send(data);
+
+		const bannerData = await ba.Utils.getBannerData(region);
+
+		return res.send(bannerData);
 	});
 
 	done();

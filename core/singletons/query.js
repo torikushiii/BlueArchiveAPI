@@ -1,7 +1,7 @@
 const { MongoClient } = require("mongodb");
 const url = `mongodb://${process.env.MONGO_IP}:${process.env.MONGO_PORT}`;
 
-module.exports = class QuerySingleton extends require("./template") {
+module.exports = class QuerySingleton extends require("./template.js") {
 	/** @type {MongoClient} */
 	#pool = null;
 
@@ -21,13 +21,12 @@ module.exports = class QuerySingleton extends require("./template") {
 		super();
 
 		if (!process.env.MONGO_IP || !process.env.MONGO_PORT) {
-			throw new Error("Missing MongoDB credentials");
+			throw new Error("MONGO_IP and MONGO_PORT environment variables must be set.");
 		}
 		else {
 			this.#pool = new MongoClient(url, {
 				useUnifiedTopology: true,
-				useNewUrlParser: true,
-				keepAlive: true
+				useNewUrlParser: true
 			});
 		}
 
@@ -36,8 +35,7 @@ module.exports = class QuerySingleton extends require("./template") {
 
 	async connect () {
 		await this.#pool.connect()
-			.then(() => console.log("Connected to MongoDB"))
-			.catch(e => console.error(e));
+			.catch(e => ba.Logger.error(e));
 
 		this.initListeners();
 	}
@@ -46,15 +44,15 @@ module.exports = class QuerySingleton extends require("./template") {
 		const pool = this.#pool;
 
 		pool.on("serverHeartbeatFailed", () => {
-			console.log("Server heartbeat failed");
+			ba.Logger.error("MongoDB server heartbeat failed.");
 		});
 
 		pool.on("topologyOpening", () => {
-			console.log("Topology opening");
+			ba.Logger.info("MongoDB topology opening.");
 		});
 
 		pool.on("topologyClosed", () => {
-			console.log("Topology closed");
+			ba.Logger.info("MongoDB topology closed.");
 		});
 	}
 
