@@ -524,6 +524,93 @@
 ```
 </details>
 
+### Get characters by their club
+> https://api.ennead.cc/buruaka/character/query?club=countermeasure
+
+    Club List:
+      - Kohshinjo68
+      - SPTF
+      - GourmetClub
+      - RemedialClass
+      - Fuuki
+      - Countermeasure
+      - Veritas
+      - CleanNClearing
+      - Meihuayuan
+      - TrainingClub
+      - Justice
+      - NinpoKenkyubu
+      - GameDev
+      - RedwinterSecretary
+      - HoukagoDessert
+      - EmptyClub
+      - Shugyobu
+      - BookClub
+      - SisterHood
+      - RabbitPlatoon
+      - AriusSqud
+      - Onmyobu
+      - Engineer
+      - TheSeminar
+      - Class227
+      - KnightsHospitaller
+      - anzenkyoku
+      - TrinityVigilance
+      - MatsuriOffice
+      - Endanbou
+      - Emergentology
+      - PandemoniumSociety
+      - FoodService
+
+<details>
+<summary>View Payload Example</summary>
+
+```json
+[
+  {
+    "id": 10005,
+    "name": "Hoshino"
+  },
+  {
+    "id": 10010,
+    "name": "Shiroko"
+  },
+  {
+    "id": 10024,
+    "name": "Shiroko (Cycling)"
+  },
+  {
+    "id": 10044,
+    "name": "Nonomi (Swimsuit)"
+  },
+  {
+    "id": 10045,
+    "name": "Hoshino (Swimsuit)"
+  },
+  {
+    "id": 13004,
+    "name": "Nonomi"
+  },
+  {
+    "id": 13008,
+    "name": "Serika"
+  },
+  {
+    "id": 20011,
+    "name": "Serika (New Year)"
+  },
+  {
+    "id": 23005,
+    "name": "Ayane"
+  },
+  {
+    "id": 26007,
+    "name": "Ayane (Swimsuit)"
+  }
+]
+```
+</details>
+
 ### Get characters by their position
 > https://api.ennead.cc/buruaka/character/query?position=front
 

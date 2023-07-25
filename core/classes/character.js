@@ -112,7 +112,8 @@ module.exports = class Character extends require("./template.js") {
 			position,
 			role,
 			school,
-			type
+			type,
+			club
 		} = query;
 
 		const characters = [...Character.data.values()]
@@ -145,6 +146,10 @@ module.exports = class Character extends require("./template.js") {
 			}
 
 			if (type && i.squadType.toLowerCase() !== type) {
+				return false;
+			}
+
+			if (club && i.club.toLowerCase() !== club) {
 				return false;
 			}
 
