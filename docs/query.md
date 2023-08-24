@@ -526,6 +526,7 @@
 
 ### Get characters by their club
 > https://api.ennead.cc/buruaka/character/query?club=countermeasure
+> https://api.ennead.cc/buruaka/character/query?club=countermeasure&region=japan
 
     Club List:
       - Kohshinjo68
@@ -561,6 +562,7 @@
       - Emergentology
       - PandemoniumSociety
       - FoodService
+      - KnowledgeLiberationFront
 
 <details>
 <summary>View Payload Example</summary>
