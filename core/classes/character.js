@@ -8,6 +8,8 @@ module.exports = class Character extends require("./template.js") {
 
 		this.name = data.name;
 
+		this.fullname = data.fullname;
+
 		this.localizeEtcId = data.localizeEtcId;
 
 		this.released = data.released;
@@ -276,6 +278,7 @@ module.exports = class Character extends require("./template.js") {
 			isPlayable: character.playable,
 			character: {
 				name: character.name,
+				fullname: charData.info.fullName,
 				baseStar: character.baseStar,
 				rarity: character.rarity,
 				armorType: character.armorType,
