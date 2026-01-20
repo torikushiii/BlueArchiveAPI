@@ -429,6 +429,8 @@ func normalizeArmor(armor string) string {
 		return "Light"
 	case "ElasticArmor":
 		return "Elastic"
+	case "CompositeArmor":
+		return "Composite"
 	default:
 		return armor
 	}
